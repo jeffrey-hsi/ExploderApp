@@ -1,5 +1,6 @@
 ﻿using Autodesk.AutoCAD.Interop;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace ConsoleApp
@@ -7,66 +8,75 @@ namespace ConsoleApp
     internal class Program
     {
         public const string PROG_ID = "AutoCAD.Application.22";
-        public const string EXTENSION_PATH = @"D:/AutoDesk/HelloWorld/HelloWorld.dll"; //TODO dynamic path
+        public readonly string EXTENSION_PATH =
+            (Directory.GetCurrentDirectory() + "/ExploderCommands.dll")
+            .Replace(@"\", @"/");
 
-        private AcadApplication launchNewInstance()
+        private AcadApplication LaunchNewInstance()
         {
             AcadApplication acApp = null;
             try
             {
-                Type acType = Type.GetTypeFromProgID(PROG_ID);
+                var acType = Type.GetTypeFromProgID(PROG_ID);
                 acApp = (AcadApplication)Activator.CreateInstance(acType, true);
             }
             catch
             {
-                System.Console.WriteLine("Cannot create object of type \"" + PROG_ID + "\"");
+                Console.WriteLine($"Cannot launch \"{PROG_ID}\"");
             }
             return acApp;
         }
 
-        private AcadApplication connectToInstance()
+        private AcadApplication ConnectToInstance()
         {
-            AcadApplication acApp = null;
+            AcadApplication acApp;
             try
             {
                 acApp = (AcadApplication)Marshal.GetActiveObject(PROG_ID);
             }
             catch
             {
-                acApp = launchNewInstance();
+                acApp = LaunchNewInstance();
             }
             return acApp;
         }
 
-        private void Run(string filePath)
+        private void Run(string[] files)
         {
-            var acApp = connectToInstance();
-            if (acApp != null)
+            var acApp = ConnectToInstance();
+            if (acApp == null)
             {
-                try
+                return;
+            }
+
+            try
+            {
+                acApp.Visible = true;
+
+                var emptyDoc = acApp.Documents.Add();
+                emptyDoc.Activate();
+                emptyDoc.Close(false);
+
+                foreach (var file in files)
                 {
-                    acApp.Visible = true;
-                    acApp.ActiveDocument.SendCommand("(command \"NETLOAD\" \"" + EXTENSION_PATH + "\") ");
-                    acApp.ActiveDocument.SendCommand("HelloForm ");
+                    acApp.ActiveDocument = acApp.Documents.Open(file.Replace(@"\", @"/"));
+                    var activeDoc = acApp.ActiveDocument;
+
+                    activeDoc.SendCommand($"(command \"NETLOAD\" \"{EXTENSION_PATH}\") ");
+                    activeDoc.SendCommand("ExplodeTypes ");
+                    activeDoc.Close(true);
                 }
-                catch (Exception ex)
-                {
-                    System.Console.Write(ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
             }
         }
 
         static void Main(string[] args)
         {
             var prog = new Program();
-            if (args.Length > 1)
-            {
-                prog.Run(args[1]);
-            }
-            else
-            {
-                prog.Run("");
-            }
+            prog.Run(args);
         }
     }
 }

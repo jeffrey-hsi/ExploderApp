@@ -58,5 +58,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ExploderCommands\ExploderCommands.csproj">
+      <Project>{a1deb43e-98bf-42ee-9ef4-2a97ef7e79c0}</Project>
+      <Name>ExploderCommands</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
