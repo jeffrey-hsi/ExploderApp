@@ -12,6 +12,14 @@ namespace ConsoleApp
             (Directory.GetCurrentDirectory() + "/ExploderCommands.dll")
             .Replace(@"\", @"/");
 
+        public readonly string LOG_PATH =
+            (Directory.GetCurrentDirectory() + "/Log.txt")
+            .Replace(@"\", @"/");
+
+        public readonly string LOGDLL_PATH =
+            (Directory.GetCurrentDirectory() + "/LogDll.txt")
+            .Replace(@"\", @"/");
+
         private AcadApplication LaunchNewInstance()
         {
             AcadApplication acApp = null;
@@ -49,15 +57,32 @@ namespace ConsoleApp
                 return;
             }
 
-            try
+            using (var logFile = File.Exists(LOG_PATH) ? File.AppendText(LOG_PATH) : File.CreateText(LOG_PATH))
             {
-                acApp.Visible = true;
+                try
+                {
+                    acApp.Visible = true;
+                    acApp.Documents.Close();
 
-                var emptyDoc = acApp.Documents.Add();
-                emptyDoc.Activate();
-                emptyDoc.Close(false);
+                    var emptyDoc = acApp.Documents.Add();
+                    emptyDoc.Activate();
+                    emptyDoc.Close(false);
 
-                foreach (var file in files)
+                    ProcessDocuments(acApp, files, logFile);
+                    logFile.WriteLine($"Finish, {DateTime.Now}\n");
+                }
+                catch (Exception ex)
+                {
+                    Console.Write(ex);
+                }
+            }
+        }
+
+        private void ProcessDocuments(AcadApplication acApp, string[] files, StreamWriter logFile)
+        {
+            foreach (var file in files)
+            {
+                try
                 {
                     acApp.ActiveDocument = acApp.Documents.Open(file.Replace(@"\", @"/"));
                     var activeDoc = acApp.ActiveDocument;
@@ -66,16 +91,31 @@ namespace ConsoleApp
                     activeDoc.SendCommand("ExplodeTypes ");
                     activeDoc.Close(true);
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex);
+                catch
+                {
+                    logFile.WriteLine($"Error, {DateTime.Now}, {file}, failed to load");
+                    continue;
+                }
+
+                if (File.Exists(LOGDLL_PATH))
+                {
+                    var errorMsg = File.ReadAllText(LOGDLL_PATH);
+                    if (errorMsg.Length > 0)
+                    {
+                        logFile.WriteLine($"Error, {DateTime.Now}, {file}, {errorMsg}");
+                        File.Create(LOGDLL_PATH).Close();
+                        continue;
+                    }
+                }
+
+                logFile.WriteLine($"Success, {DateTime.Now}, {file}");
             }
         }
 
         static void Main(string[] args)
         {
             var prog = new Program();
+
             prog.Run(args);
         }
     }

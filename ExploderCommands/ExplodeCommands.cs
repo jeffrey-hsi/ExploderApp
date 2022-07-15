@@ -23,15 +23,28 @@ namespace TangentExploder
             using (var lockDoc = doc.LockDocument())
             using (var transaction = currDb.TransactionManager.StartTransaction())
             {
-                var blkTbl = (BlockTable)transaction.GetObject(
-                    currDb.BlockTableId, OpenMode.ForRead);
-
-                var modelSpace = (BlockTableRecord)transaction.GetObject(
-                    blkTbl[BlockTableRecord.ModelSpace], OpenMode.ForRead);
-
-                if (GetTypes() is Regex types)
+                try
                 {
-                    CheckInBlockTableRecord(transaction, modelSpace, types);
+                    var blkTbl = (BlockTable)transaction.GetObject(
+                        currDb.BlockTableId, OpenMode.ForRead);
+
+                    var modelSpace = (BlockTableRecord)transaction.GetObject(
+                        blkTbl[BlockTableRecord.ModelSpace], OpenMode.ForRead);
+
+                    if (GetTypes() is Regex types)
+                    {
+                        CheckInBlockTableRecord(transaction, modelSpace, types);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var currPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+                        .Replace(@"\", @"/");
+                    var logPath = currPath + "/logDll.txt";
+                    using (var logFile = (File.Exists(logPath)) ? File.AppendText(logPath) : File.CreateText(logPath))
+                    {
+                        logFile.Write(ex.Message);
+                    }
                 }
 
                 transaction.Commit();
@@ -79,7 +92,17 @@ namespace TangentExploder
             {
                 var objs = new DBObjectCollection();
 
-                entity.Explode(/*out*/ objs);
+                try
+                {
+                    entity.Explode(/*out*/ objs);
+                }
+                catch
+                {
+                    Application.DocumentManager.MdiActiveDocument.Editor
+                        .WriteMessage($"{ entity.GetRXClass().DxfName } cannot be exploded\n");
+
+                    throw;
+                }
 
                 block.UpgradeOpen();
                 foreach (var obj in objs.Cast<Entity>())
