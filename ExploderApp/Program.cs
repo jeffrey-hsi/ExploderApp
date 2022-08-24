@@ -31,52 +31,38 @@ namespace ConsoleApp
 
         private AcadApplication LaunchNewInstance()
         {
-            AcadApplication acApp = null;
-            try
-            {
-                var acType = Type.GetTypeFromProgID(PROG_ID);
-                acApp = (AcadApplication)Activator.CreateInstance(acType, true);
-            }
-            catch
-            {
-                Console.WriteLine($"Cannot launch \"{PROG_ID}\"");
-            }
-            return acApp;
+            var acType = Type.GetTypeFromProgID(PROG_ID);
+            return (AcadApplication)Activator.CreateInstance(acType, true);
         }
 
         private AcadApplication ConnectToInstance()
         {
-            AcadApplication acApp;
             try
             {
-                acApp = (AcadApplication)Marshal.GetActiveObject(PROG_ID);
+                return (AcadApplication)Marshal.GetActiveObject(PROG_ID);
             }
             catch
             {
-                acApp = LaunchNewInstance();
+                return LaunchNewInstance();
             }
-            return acApp;
         }
 
         private void Run(IEnumerable<string> args)
         {
-            var acApp = ConnectToInstance();
-            if (acApp == null)
-            {
-                return;
-            }
+            var files = Enumerable.Zip(
+                args.Where((str, index) => index % 2 == 0).Select(path => path.Replace(@"\", @"/")),
+                args.Where((str, index) => index % 2 == 1),
+                (even, odd) => (filepath: even, fid: odd));
 
-            Directory.CreateDirectory(LOG_DIRECTORY);
-            var logPath = $"{LOG_DIRECTORY}/Reports-{DateTime.Now:yyyy_MM_dd_HH_mm_ss}.log";
-            using (var logFile = File.CreateText(logPath))
+            try
             {
-                var files = Enumerable.Zip(
-                    args.Where((str, index) => index % 2 == 0).Select(path => path.Replace(@"\", @"/")),
-                    args.Where((str, index) => index % 2 == 1),
-                    (even, odd) => (filepath: even, fid: odd));
+                var acApp = ConnectToInstance();
 
-                try
+                Directory.CreateDirectory(LOG_DIRECTORY);
+                var logPath = $"{LOG_DIRECTORY}/Reports-{DateTime.Now:yyyy_MM_dd_HH_mm_ss}.log";
+                using (var logFile = File.CreateText(logPath))
                 {
+
                     acApp.Visible = true;
                     acApp.Documents.Close();
                     Thread.Sleep(SUSPEND_PERIOD);
@@ -90,13 +76,13 @@ namespace ConsoleApp
                     ProcessDocuments(acApp, files, logFile);
                     logFile.WriteLine($"Finish, {DateTime.Now}");
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                foreach (var (_, fid) in files)
                 {
-                    Console.Write(ex.Message);
-                    foreach (var (_, fid) in files)
-                    {
-                        CallBack(fid, false);
-                    }
+                    CallBack(fid, false);
                 }
             }
         }
