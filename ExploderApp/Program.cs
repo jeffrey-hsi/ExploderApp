@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -12,16 +13,16 @@ namespace ConsoleApp
     internal class Program
     {
         public const string PROG_ID = "AutoCAD.Application.22";
-        public readonly string EXTENSION_PATH =
-            (Directory.GetCurrentDirectory() + "/ExploderCommands.dll")
+        public static readonly string EXTENSION_PATH =
+            $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/ExploderCommands.dll"
             .Replace(@"\", @"/");
 
-        public readonly string LOG_PATH =
-            Directory.GetCurrentDirectory()
+        public static readonly string LOG_DIRECTORY =
+            $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Logs/"
             .Replace(@"\", @"/");
 
-        public readonly string LOGDLL_PATH =
-            (Directory.GetCurrentDirectory() + "/LogDll.txt")
+        public static readonly string LOGDLL_PATH =
+            $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/LogDll.txt"
             .Replace(@"\", @"/");
 
         private static string callBackUrl;
@@ -65,7 +66,8 @@ namespace ConsoleApp
                 return;
             }
 
-            var logPath = $"{LOG_PATH}/Reports-{DateTime.Now:yyyy_MM_dd_HH_mm_ss}.log";
+            Directory.CreateDirectory(LOG_DIRECTORY);
+            var logPath = $"{LOG_DIRECTORY}/Reports-{DateTime.Now:yyyy_MM_dd_HH_mm_ss}.log";
             using (var logFile = File.CreateText(logPath))
             {
                 var files = Enumerable.Zip(
