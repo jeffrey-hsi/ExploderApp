@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace ConsoleApp
 {
@@ -24,6 +25,8 @@ namespace ConsoleApp
             .Replace(@"\", @"/");
 
         private static string callBackUrl;
+
+        private const int SUSPEND_PERIOD = 500; // ms
 
         private AcadApplication LaunchNewInstance()
         {
@@ -74,10 +77,13 @@ namespace ConsoleApp
                 {
                     acApp.Visible = true;
                     acApp.Documents.Close();
+                    Thread.Sleep(SUSPEND_PERIOD);
 
                     var emptyDoc = acApp.Documents.Add();
                     emptyDoc.Activate();
+                    Thread.Sleep(SUSPEND_PERIOD);
                     emptyDoc.Close(false);
+                    Thread.Sleep(SUSPEND_PERIOD);
 
                     ProcessDocuments(acApp, files, logFile);
                     logFile.WriteLine($"Finish, {DateTime.Now}");
@@ -105,6 +111,7 @@ namespace ConsoleApp
                     activeDoc.SendCommand($"(command \"NETLOAD\" \"{EXTENSION_PATH}\") ");
                     activeDoc.SendCommand("ExplodeTypes ");
                     activeDoc.Close(true);
+                    Thread.Sleep(SUSPEND_PERIOD);
                 }
                 catch (Exception exception)
                 {
