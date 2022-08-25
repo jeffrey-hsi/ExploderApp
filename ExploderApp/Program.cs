@@ -74,8 +74,10 @@ class ExplodeApp
                 emptyDoc.Close(false);
                 Thread.Sleep(SUSPEND_PERIOD);
 
-                DoForEachFile(acApp, files, logFile);
+                var callbacks = Task.WhenAll(files.Select(
+                    file => DoForFile(acApp, file, logFile)));
                 logFile.WriteLine($"Finish, {DateTime.Now}");
+                callbacks.Wait();
             }
         }
         catch (Exception ex)
@@ -87,49 +89,45 @@ class ExplodeApp
         }
     }
 
-    private static void DoForEachFile(AcadApplication acApp, IEnumerable<(string filepath, string fid)> files, StreamWriter logFile)
+    private static async Task DoForFile(AcadApplication acApp, (string filepath, string fid) file, StreamWriter logFile)
     {
-        var callbacks = new List<Task>(files.Count());
-        foreach (var (filepath, fid) in files)
+        var (filepath, fid) = file;
+        try
         {
-            try
-            {
-                acApp.ActiveDocument = acApp.Documents.Open(filepath.Replace(@"\", @"/"));
-                var activeDoc = acApp.ActiveDocument;
+            acApp.ActiveDocument = acApp.Documents.Open(filepath.Replace(@"\", @"/"));
+            var activeDoc = acApp.ActiveDocument;
 
-                activeDoc.SendCommand($"(command \"NETLOAD\" \"{EXTENSION_PATH}\") ");
-                activeDoc.SendCommand("ExplodeTypes ");
-                activeDoc.Close(true);
-                Thread.Sleep(SUSPEND_PERIOD);
-            }
-            catch (Exception exception)
-            {
-                callbacks.Add(
-                    CallBack(fid, false));
-                Console.WriteLine(exception.Message);
-                logFile.WriteLine($"Error, {DateTime.Now}, {filepath}, fail to load: {exception.Message}");
-                continue;
-            }
-
-            if (File.Exists(LOGDLL_PATH))
-            {
-                var errorMsg = File.ReadAllText(LOGDLL_PATH);
-                if (errorMsg.Length > 0)
-                {
-                    callbacks.Add(
-                        CallBack(fid, false));
-                    logFile.WriteLine($"Error, {DateTime.Now}, {filepath}, {errorMsg}");
-
-                    File.Create(LOGDLL_PATH).Close();
-                    continue;
-                }
-            }
-
-            callbacks.Add(
-                CallBack(fid, true));
-            logFile.WriteLine($"Success, {DateTime.Now}, {filepath}");
+            activeDoc.SendCommand($"(command \"NETLOAD\" \"{EXTENSION_PATH}\") ");
+            activeDoc.SendCommand("ExplodeTypes ");
+            activeDoc.Close(true);
+            Thread.Sleep(SUSPEND_PERIOD);
         }
-        Task.WaitAll(callbacks.ToArray());
+        catch (Exception exception)
+        {
+            var failedCallBack = CallBack(fid, false);
+            Console.WriteLine(exception.Message);
+            logFile.WriteLine($"Error, {DateTime.Now}, {filepath}, fail to load: {exception.Message}");
+            await failedCallBack;
+            return;
+        }
+
+        if (File.Exists(LOGDLL_PATH))
+        {
+            var errorMsg = File.ReadAllText(LOGDLL_PATH);
+            if (errorMsg.Length > 0)
+            {
+                var failedCallBack = CallBack(fid, false);
+                logFile.WriteLine($"Error, {DateTime.Now}, {filepath}, {errorMsg}");
+
+                File.Create(LOGDLL_PATH).Close();
+                await failedCallBack;
+                return;
+            }
+        }
+
+        var sucessCallBack = CallBack(fid, true);
+        logFile.WriteLine($"Success, {DateTime.Now}, {filepath}");
+        await sucessCallBack;
     }
 
     private static async Task CallBack(string fid, bool isSucceed)
