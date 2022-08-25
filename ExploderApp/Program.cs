@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 class ExplodeApp
 {
@@ -27,6 +28,8 @@ class ExplodeApp
     private static string callBackUrl;
 
     private const int SUSPEND_PERIOD = 500; // ms
+
+    private static readonly HttpClient httpClient = new HttpClient();
 
     private static AcadApplication LaunchNewInstance()
     {
@@ -77,16 +80,16 @@ class ExplodeApp
         }
         catch (Exception ex)
         {
-            Console.Write(ex.Message);
-            foreach (var (_, fid) in files)
-            {
-                CallBack(fid, false);
-            }
+            var callbacks = Task.WhenAll(files.Select(
+                file => CallBack(file.fid, false)));
+            Console.WriteLine(ex.Message);
+            callbacks.Wait();
         }
     }
 
     private static void DoForEachFile(AcadApplication acApp, IEnumerable<(string filepath, string fid)> files, StreamWriter logFile)
     {
+        var callbacks = new List<Task>(files.Count());
         foreach (var (filepath, fid) in files)
         {
             try
@@ -101,8 +104,9 @@ class ExplodeApp
             }
             catch (Exception exception)
             {
+                callbacks.Add(
+                    CallBack(fid, false));
                 Console.WriteLine(exception.Message);
-                CallBack(fid, false);
                 logFile.WriteLine($"Error, {DateTime.Now}, {filepath}, fail to load: {exception.Message}");
                 continue;
             }
@@ -112,7 +116,8 @@ class ExplodeApp
                 var errorMsg = File.ReadAllText(LOGDLL_PATH);
                 if (errorMsg.Length > 0)
                 {
-                    CallBack(fid, false);
+                    callbacks.Add(
+                        CallBack(fid, false));
                     logFile.WriteLine($"Error, {DateTime.Now}, {filepath}, {errorMsg}");
 
                     File.Create(LOGDLL_PATH).Close();
@@ -120,23 +125,24 @@ class ExplodeApp
                 }
             }
 
-            CallBack(fid, true);
+            callbacks.Add(
+                CallBack(fid, true));
             logFile.WriteLine($"Success, {DateTime.Now}, {filepath}");
         }
+        Task.WaitAll(callbacks.ToArray());
     }
 
-    private static async void CallBack(string fid, bool isSucceed)
+    private static async Task CallBack(string fid, bool isSucceed)
     {
         var stateCode = isSucceed ? 4 : 5;
 
-        var client = new HttpClient();
         try
         {
-            var request = client.GetAsync($"{callBackUrl}?fid={fid}&state={stateCode}");
-            await request;
+            await httpClient.GetAsync($"{callBackUrl}?fid={fid}&state={stateCode}");
         }
-        catch (Exception exception)
+        catch (HttpRequestException exception)
         {
+            // .NET 5 : exception.StatusCode
             Console.WriteLine(exception.Message);
             // keep executing
         }
