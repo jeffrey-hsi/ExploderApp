@@ -33,8 +33,16 @@ class ExplodeApp
 
     private static AcadApplication LaunchNewInstance()
     {
-        var acType = Type.GetTypeFromProgID(PROG_ID);
-        return (AcadApplication)Activator.CreateInstance(acType, true);
+        try
+        {
+            var acType = Type.GetTypeFromProgID(PROG_ID);
+            return (AcadApplication)Activator.CreateInstance(acType, true);
+        }
+        catch
+        {
+            Console.WriteLine($@"Cannot launch ""{PROG_ID}""");
+            throw;
+        }
     }
 
     private static AcadApplication ConnectToInstance()
@@ -94,10 +102,10 @@ class ExplodeApp
         var (filepath, fid) = file;
         try
         {
-            acApp.ActiveDocument = acApp.Documents.Open(filepath.Replace(@"\", @"/"));
+            acApp.ActiveDocument = acApp.Documents.Open(filepath);
             var activeDoc = acApp.ActiveDocument;
 
-            activeDoc.SendCommand($"(command \"NETLOAD\" \"{EXTENSION_PATH}\") ");
+            activeDoc.SendCommand($@"(command ""NETLOAD"" ""{EXTENSION_PATH}"") ");
             activeDoc.SendCommand("ExplodeTypes ");
             activeDoc.Close(true);
             Thread.Sleep(SUSPEND_PERIOD);
