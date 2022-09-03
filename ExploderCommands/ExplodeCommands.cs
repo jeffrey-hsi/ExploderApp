@@ -14,9 +14,16 @@ namespace TangentExploder
 {
     public class ExplodeCommands
     {
+        private static readonly string LOG_PATH =
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+            .Replace(@"\", @"/") + "/.tmp";
+
         [CommandMethod("ExplodeTypes")]
         public static void ExplodeTypes()
         {
+            var info = Directory.CreateDirectory(LOG_PATH);
+            info.Attributes |= FileAttributes.Hidden;
+
             var doc = Application.DocumentManager.MdiActiveDocument;
             var currDb = doc.Database;
 
@@ -38,15 +45,16 @@ namespace TangentExploder
                 }
                 catch (Exception ex)
                 {
-                    var logPath =
-                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-                        .Replace(@"\", @"/") + "/.tmp";
-                    var info = Directory.CreateDirectory(logPath);
-                    info.Attributes |= FileAttributes.Hidden;
-
-                    using (var logFile = File.CreateText($"{logPath}/plugin.log"))
+                    using (var logFile = File.CreateText($"{LOG_PATH}/plugin.log"))
                     {
                         logFile.Write(ex.Message);
+                    }
+                }
+                catch
+                {
+                    using (var logFile = File.CreateText($"{LOG_PATH}/plugin.log"))
+                    {
+                        logFile.Write("Unknown error (not from AutoCAD)");
                     }
                 }
 
