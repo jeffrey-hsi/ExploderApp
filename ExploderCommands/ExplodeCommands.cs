@@ -69,9 +69,11 @@ namespace TangentExploder
 
         private static void CheckInBlockTableRecord(Transaction transaction, BlockTableRecord block, Regex regex)
         {
-            foreach (var objId in block)
+            foreach (var objId in block.Cast<ObjectId>()
+                .Where(objId => objId.IsValid))
             {
-                var entity = (Entity)transaction.GetObject(objId, OpenMode.ForRead);
+                var entity = (Entity)transaction.GetObject(objId, OpenMode.ForRead,
+                    openErased: false, forceOpenOnLockedLayer: true);
 
                 RecursiveExplode(transaction, block, entity, regex);
             }
@@ -81,10 +83,11 @@ namespace TangentExploder
         {
             Debug.Assert(entity.BlockId == block.Id);
 
-            if (entity is BlockReference blockRef)
+            if (entity is BlockReference blockRef &&
+                blockRef.BlockTableRecord is var subBlockId && subBlockId.IsValid)
             {
                 var subBlock = (BlockTableRecord)transaction.GetObject(
-                    blockRef.BlockTableRecord, OpenMode.ForRead);
+                    subBlockId, OpenMode.ForRead);
 
                 CheckInBlockTableRecord(transaction, subBlock, regex);
             }
