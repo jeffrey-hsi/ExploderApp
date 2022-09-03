@@ -64,37 +64,40 @@ class ExplodeApp
             args.Where((str, index) => index % 2 == 1),
             (even, odd) => (filepath: even, fid: odd));
 
+        AcadApplication acApp;
         try
         {
-            var acApp = ConnectToInstance();
+            acApp = ConnectToInstance();
 
-            Directory.CreateDirectory(LOG_DIRECTORY);
-            var logPath = $"{LOG_DIRECTORY}/Reports-{DateTime.Now:yyyy_MM_dd_HH_mm_ss}.log";
-            using (var logFile = File.CreateText(logPath))
-            {
-                acApp.Visible = true;
-                acApp.Documents.Close();
-                Thread.Sleep(SUSPEND_PERIOD);
+            acApp.Visible = true;
+            acApp.Documents.Close();
+            Thread.Sleep(SUSPEND_PERIOD);
 
-                var emptyDoc = acApp.Documents.Add();
-                emptyDoc.Activate();
-                Thread.Sleep(SUSPEND_PERIOD);
-                emptyDoc.Close(false);
-                Thread.Sleep(SUSPEND_PERIOD);
-
-                var callbacks = Task.WhenAll(files.Select(
-                    file => DoForFile(acApp, file, logFile)));
-                logFile.WriteLine($"Finish, {DateTime.Now}");
-                callbacks.Wait();
-            }
+            var emptyDoc = acApp.Documents.Add();
+            emptyDoc.Activate();
+            Thread.Sleep(SUSPEND_PERIOD);
+            emptyDoc.Close(false);
+            Thread.Sleep(SUSPEND_PERIOD);
         }
         catch (Exception ex)
         {
-            var callbacks = Task.WhenAll(files.Select(
+            var callback = Task.WhenAll(files.Select(
                 file => CallBack(file.fid, false)));
             Console.WriteLine(ex.Message);
-            callbacks.Wait();
+            callback.Wait();
+            return;
         }
+
+        Task callbacks;
+        Directory.CreateDirectory(LOG_DIRECTORY);
+        var logPath = $"{LOG_DIRECTORY}/Reports-{DateTime.Now:yyyy_MM_dd_HH_mm_ss}.log";
+        using (var logFile = File.CreateText(logPath))
+        {
+            callbacks = Task.WhenAll(files.Select(
+                file => DoForFile(acApp, file, logFile)));
+            logFile.WriteLine($"Finish, {DateTime.Now}");
+        }
+        callbacks.Wait();
     }
 
     private static async Task DoForFile(AcadApplication acApp, (string filepath, string fid) file, StreamWriter logFile)
