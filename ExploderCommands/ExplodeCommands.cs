@@ -8,129 +8,126 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 
 [assembly: ExtensionApplication(null)]
-[assembly: CommandClass(typeof(TangentExploder.ExplodeCommands))]
+[assembly: CommandClass(typeof(ExplodeCommand))]
 
-namespace TangentExploder
+class ExplodeCommand
 {
-    public class ExplodeCommands
+    private static readonly string LOG_PATH =
+        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+        .Replace(@"\", @"/") + "/.tmp";
+
+    [CommandMethod("ExplodeTypes")]
+    public static void ExplodeTypes()
     {
-        private static readonly string LOG_PATH =
+        var info = Directory.CreateDirectory(LOG_PATH);
+        info.Attributes |= FileAttributes.Hidden;
+
+        var doc = Application.DocumentManager.MdiActiveDocument;
+        var currDb = doc.Database;
+
+        using (var lockDoc = doc.LockDocument())
+        using (var transaction = currDb.TransactionManager.StartTransaction())
+        {
+            try
+            {
+                var blkTbl = (BlockTable)transaction.GetObject(
+                    currDb.BlockTableId, OpenMode.ForRead);
+
+                var modelSpace = (BlockTableRecord)transaction.GetObject(
+                    blkTbl[BlockTableRecord.ModelSpace], OpenMode.ForRead);
+
+                if (GetTypes() is Regex types)
+                {
+                    CheckInBlockTableRecord(transaction, modelSpace, types);
+                }
+            }
+            catch (Exception ex)
+            {
+                using (var logFile = File.CreateText($"{LOG_PATH}/plugin.log"))
+                {
+                    logFile.Write(ex.Message);
+                }
+            }
+            catch
+            {
+                using (var logFile = File.CreateText($"{LOG_PATH}/plugin.log"))
+                {
+                    logFile.Write("Unknown error (not from AutoCAD)");
+                }
+            }
+
+            transaction.Commit();
+        } // unlock
+    }
+
+    private static Regex GetTypes()
+    {
+        var typeFile =
             Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-            .Replace(@"\", @"/") + "/.tmp";
-
-        [CommandMethod("ExplodeTypes")]
-        public static void ExplodeTypes()
+            .Replace(@"\", @"/") + "/Configuration/Types.txt";
+        if (!File.Exists(typeFile))
         {
-            var info = Directory.CreateDirectory(LOG_PATH);
-            info.Attributes |= FileAttributes.Hidden;
-
-            var doc = Application.DocumentManager.MdiActiveDocument;
-            var currDb = doc.Database;
-
-            using (var lockDoc = doc.LockDocument())
-            using (var transaction = currDb.TransactionManager.StartTransaction())
-            {
-                try
-                {
-                    var blkTbl = (BlockTable)transaction.GetObject(
-                        currDb.BlockTableId, OpenMode.ForRead);
-
-                    var modelSpace = (BlockTableRecord)transaction.GetObject(
-                        blkTbl[BlockTableRecord.ModelSpace], OpenMode.ForRead);
-
-                    if (GetTypes() is Regex types)
-                    {
-                        CheckInBlockTableRecord(transaction, modelSpace, types);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    using (var logFile = File.CreateText($"{LOG_PATH}/plugin.log"))
-                    {
-                        logFile.Write(ex.Message);
-                    }
-                }
-                catch
-                {
-                    using (var logFile = File.CreateText($"{LOG_PATH}/plugin.log"))
-                    {
-                        logFile.Write("Unknown error (not from AutoCAD)");
-                    }
-                }
-
-                transaction.Commit();
-            } // unlock
+            return null;
         }
 
-        private static Regex GetTypes()
-        {
-            var typeFile =
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-                .Replace(@"\", @"/") + "/Configuration/Types.txt";
-            if (!File.Exists(typeFile))
-            {
-                return null;
-            }
+        var pattern = string.Join("|",
+            File.ReadLines(typeFile).Select(line => line.Trim())
+                                    .Where(line => line.Length > 0));
+        return new Regex(pattern, RegexOptions.ECMAScript);
+    }
 
-            var pattern = string.Join("|",
-                File.ReadLines(typeFile).Select(line => line.Trim())
-                                        .Where(line => line.Length > 0));
-            return new Regex(pattern, RegexOptions.ECMAScript);
+    private static void CheckInBlockTableRecord(Transaction transaction, BlockTableRecord block, Regex regex)
+    {
+        foreach (var objId in block.Cast<ObjectId>()
+            .Where(objId => objId.IsValid))
+        {
+            var entity = (Entity)transaction.GetObject(objId, OpenMode.ForRead,
+                openErased: false, forceOpenOnLockedLayer: true);
+
+            RecursiveExplode(transaction, block, entity, regex);
         }
+    }
 
-        private static void CheckInBlockTableRecord(Transaction transaction, BlockTableRecord block, Regex regex)
+    private static void RecursiveExplode(Transaction transaction, BlockTableRecord block, Entity entity, Regex regex)
+    {
+        Debug.Assert(entity.BlockId == block.Id);
+
+        if (entity is BlockReference blockRef &&
+            blockRef.BlockTableRecord is var subBlockId && subBlockId.IsValid)
         {
-            foreach (var objId in block.Cast<ObjectId>()
-                .Where(objId => objId.IsValid))
-            {
-                var entity = (Entity)transaction.GetObject(objId, OpenMode.ForRead,
-                    openErased: false, forceOpenOnLockedLayer: true);
+            var subBlock = (BlockTableRecord)transaction.GetObject(
+                subBlockId, OpenMode.ForRead);
 
-                RecursiveExplode(transaction, block, entity, regex);
-            }
+            CheckInBlockTableRecord(transaction, subBlock, regex);
         }
-
-        private static void RecursiveExplode(Transaction transaction, BlockTableRecord block, Entity entity, Regex regex)
+        else if (regex.IsMatch(entity.GetRXClass().DxfName))
         {
-            Debug.Assert(entity.BlockId == block.Id);
+            var objs = new DBObjectCollection();
 
-            if (entity is BlockReference blockRef &&
-                blockRef.BlockTableRecord is var subBlockId && subBlockId.IsValid)
+            try
             {
-                var subBlock = (BlockTableRecord)transaction.GetObject(
-                    subBlockId, OpenMode.ForRead);
-
-                CheckInBlockTableRecord(transaction, subBlock, regex);
+                entity.Explode(/*out*/ objs);
             }
-            else if (regex.IsMatch(entity.GetRXClass().DxfName))
+            catch
             {
-                var objs = new DBObjectCollection();
+                Application.DocumentManager.MdiActiveDocument.Editor
+                    .WriteMessage($"{ entity.GetRXClass().DxfName } cannot be exploded\n");
 
-                try
-                {
-                    entity.Explode(/*out*/ objs);
-                }
-                catch
-                {
-                    Application.DocumentManager.MdiActiveDocument.Editor
-                        .WriteMessage($"{ entity.GetRXClass().DxfName } cannot be exploded\n");
-
-                    throw;
-                }
-
-                block.UpgradeOpen();
-                foreach (var obj in objs.Cast<Entity>())
-                {
-                    block.AppendEntity(obj);
-                    transaction.AddNewlyCreatedDBObject(obj, true);
-
-                    RecursiveExplode(transaction, block, obj, regex);
-                }
-                block.DowngradeOpen();
-
-                entity.UpgradeOpen();
-                entity.Erase();
+                throw;
             }
+
+            block.UpgradeOpen();
+            foreach (var obj in objs.Cast<Entity>())
+            {
+                block.AppendEntity(obj);
+                transaction.AddNewlyCreatedDBObject(obj, true);
+
+                RecursiveExplode(transaction, block, obj, regex);
+            }
+            block.DowngradeOpen();
+
+            entity.UpgradeOpen();
+            entity.Erase();
         }
     }
 }
