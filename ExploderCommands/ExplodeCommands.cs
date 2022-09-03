@@ -38,10 +38,13 @@ namespace TangentExploder
                 }
                 catch (Exception ex)
                 {
-                    var currPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+                    var logPath =
+                        $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/.tmp"
                         .Replace(@"\", @"/");
-                    var logPath = currPath + "/logDll.txt";
-                    using (var logFile = (File.Exists(logPath)) ? File.AppendText(logPath) : File.CreateText(logPath))
+                    var info = Directory.CreateDirectory(logPath);
+                    info.Attributes |= FileAttributes.Hidden;
+
+                    using (var logFile = File.CreateText($"{logPath}/plugin.log"))
                     {
                         logFile.Write(ex.Message);
                     }
@@ -53,9 +56,9 @@ namespace TangentExploder
 
         private static Regex GetTypes()
         {
-            var currPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+            var typeFile =
+                $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Configuration/Types.txt"
                 .Replace(@"\", @"/");
-            var typeFile = currPath + "/Types.txt";
             if (!File.Exists(typeFile))
             {
                 return null;

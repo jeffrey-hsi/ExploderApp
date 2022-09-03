@@ -22,7 +22,7 @@ class ExplodeApp
         .Replace(@"\", @"/");
 
     public static readonly string LOGDLL_PATH =
-        $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/LogDll.txt"
+        $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/.tmp/plugin.log"
         .Replace(@"\", @"/");
 
     private static string callBackUrl;
