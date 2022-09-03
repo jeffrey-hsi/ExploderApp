@@ -4,16 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A1DEB43E-98BF-42EE-9EF4-2A97EF7E79C0}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ExploderCommands</RootNamespace>
-    <AssemblyName>ExploderCommands</AssemblyName>
+    <ProjectGuid>{042050FF-BB00-44B1-87B8-DDAB3E39FA73}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ExplodeApp</RootNamespace>
+    <AssemblyName>ExplodeApp</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -21,8 +22,10 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\build\Release\</OutputPath>
@@ -31,17 +34,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AcCoreMgd">
-      <HintPath>..\sdk\common\AcCoreMgd.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Autodesk.AutoCAD.Interop">
+      <HintPath>..\sdk\x64\Autodesk.AutoCAD.Interop.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="AcDbMgd">
-      <HintPath>..\sdk\common\AcDbMgd.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcMgd">
-      <HintPath>..\sdk\common\AcMgd.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Autodesk.AutoCAD.Interop.Common">
+      <HintPath>..\sdk\x64\Autodesk.AutoCAD.Interop.Common.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
@@ -53,7 +52,13 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExplodeCommands.cs" />
+    <Compile Include="ExplodeApp.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ExplodeCommand\ExplodeCommand.csproj">
+      <Project>{a1deb43e-98bf-42ee-9ef4-2a97ef7e79c0}</Project>
+      <Name>ExplodeCommand</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

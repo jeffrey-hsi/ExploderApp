@@ -15,7 +15,7 @@ class ExplodeApp
 
     public static readonly string EXTENSION_PATH =
         Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-        .Replace(@"\", @"/") + "/ExploderCommands.dll";
+        .Replace(@"\", @"/") + "/ExplodeCommand.dll";
 
     public static readonly string LOG_DIRECTORY =
         Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
