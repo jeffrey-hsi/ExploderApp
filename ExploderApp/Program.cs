@@ -14,16 +14,16 @@ class ExplodeApp
     public const string PROG_ID = "AutoCAD.Application.22";
 
     public static readonly string EXTENSION_PATH =
-        $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/ExploderCommands.dll"
-        .Replace(@"\", @"/");
+        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+        .Replace(@"\", @"/") + "/ExploderCommands.dll";
 
     public static readonly string LOG_DIRECTORY =
-        $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Logs/"
-        .Replace(@"\", @"/");
+        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+        .Replace(@"\", @"/") + "/Logs";
 
     public static readonly string LOGDLL_PATH =
-        $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/.tmp/plugin.log"
-        .Replace(@"\", @"/");
+        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+        .Replace(@"\", @"/") + "/.tmp/plugin.log";
 
     private static string callBackUrl;
 
