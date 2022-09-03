@@ -72,12 +72,6 @@ class ExplodeApp
             acApp.Visible = true;
             acApp.Documents.Close();
             Thread.Sleep(SUSPEND_PERIOD);
-
-            var emptyDoc = acApp.Documents.Add();
-            emptyDoc.Activate();
-            Thread.Sleep(SUSPEND_PERIOD);
-            emptyDoc.Close(false);
-            Thread.Sleep(SUSPEND_PERIOD);
         }
         catch (Exception ex)
         {
