@@ -32,15 +32,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AcCoreMgd">
-      <HintPath>..\sdk\common\AcCoreMgd.dll</HintPath>
+      <HintPath>$(SolutionDir)/SDK/ObjectARX/.NET API/AcCoreMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcDbMgd">
-      <HintPath>..\sdk\common\AcDbMgd.dll</HintPath>
+      <HintPath>$(SolutionDir)/SDK/ObjectARX/.NET API/AcDbMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcMgd">
-      <HintPath>..\sdk\common\AcMgd.dll</HintPath>
+      <HintPath>$(SolutionDir)/SDK/ObjectARX/.NET API/AcMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
