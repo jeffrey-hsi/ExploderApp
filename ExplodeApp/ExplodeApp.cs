@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 class ExplodeApp
 {
-    public const string PROG_ID = "AutoCAD.Application.22";
+    public const string PROG_ID = "AutoCAD.Application.24";
 
     public static readonly string EXTENSION_PATH =
         Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
