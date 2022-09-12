@@ -16,11 +16,20 @@
         <member name="E:Autodesk.AutoCAD.Windows.DocumentWindow.DocumentWindowLoaded">
             <summary>This event will be sent when the document for the document window is ready.</summary>
         </member>
+        <member name="E:Autodesk.AutoCAD.Windows.DocumentWindow.DocumentWindowUpdated">
+            <summary>This event will be sent when the document for the document window is updated.</summary>
+        </member>
         <member name="P:Autodesk.AutoCAD.Windows.DocumentWindow.Title">
             <summary>Gets or sets the title of the document window.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.Windows.DocumentWindow.Document">
             <summary>Gets the document attached to the document window.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.DocumentWindow.CanUpdate">
+            <summary>This is CanUpdate, a member of class DocumentWindow.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.DocumentWindow.IsFloating">
+            <summary>Indicates whether the document window is floating.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.Windows.WPFDocumentWindow">
             <summary>Class used for creating WPF based document window.</summary>
@@ -32,14 +41,15 @@
         <member name="T:Autodesk.AutoCAD.ApplicationServices.DocumentWindowCollection">
             <summary>Wrapper (wraps AcApDocWindowManager).</summary>
         </member>
-        <member name="M:Autodesk.AutoCAD.ApplicationServices.DocumentWindowCollection.LookupDocumentWindow(AcApDocWindow*)">
-            <summary>This is LookupDocumentWindow, a member of class DocumentWindowCollection.</summary>
+        <member name="M:Autodesk.AutoCAD.ApplicationServices.DocumentWindowCollection.FindDocumentWindowByHandle(System.IntPtr)">
+            <summary>Searches all document windows for a window with the specified handle.</summary>
+            <param name="handle"> Input handle of the window to find</param>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.DocumentWindowCollection.GetEnumerator">
             <summary>Get the enumerator used to iterate document windows inside document window collection.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.DocumentWindowCollection.MoveDocumentWindow(Autodesk.AutoCAD.Windows.DocumentWindow,System.Int32)">
-            <summary>Change the order of document windows.</summary>
+            <summary>Changes the order of a document window.</summary>
             <param name="documentWindow"> Document window to be moved</param>
             <param name="newIndex"> New index for where to put the document window moved as the new position, the range for this parameter should be between 0 and Count-1</param>
         </member>
@@ -54,6 +64,15 @@
         </member>
         <member name="E:Autodesk.AutoCAD.ApplicationServices.DocumentWindowCollection.DocumentWindowActivated">
             <summary>Event triggered when a document window is activated.</summary>
+        </member>
+        <member name="E:Autodesk.AutoCAD.ApplicationServices.DocumentWindowCollection.DocumentWindowFloated">
+            <summary>Fired when a document window is dragged out from the MDI child frame into a floating window.</summary>
+        </member>
+        <member name="E:Autodesk.AutoCAD.ApplicationServices.DocumentWindowCollection.DocumentWindowDocked">
+            <summary>Fired when a document window is docked from a floating state back to the MDI child frame.</summary>
+        </member>
+        <member name="E:Autodesk.AutoCAD.ApplicationServices.DocumentWindowCollection.DocumentWindowToBeDocked">
+            <summary>Fired when a document window is about to be docked from a floating state back to the MDI child frame.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.DocumentWindowCollection.CopyTo(System.Array,System.Int32)">
             <summary>This is CopyTo, a member of class DocumentWindowCollection.</summary>
@@ -164,12 +183,29 @@ A return of true indicates the function was successful.</summary>
             <param name="control"> Input palette control</param>
         </member>
         <member name="M:Autodesk.AutoCAD.Windows.PaletteSet.AddVisual(System.String,System.Windows.Media.Visual,System.Boolean)">
-            <summary>This is AddVisual, a member of class PaletteSet.</summary>
+            <summary>Adds a visual window and controls whether the content is resized to the palette.</summary>
+            <param name="name"> Input palette name</param>
+            <param name="control"> Input visual control</param>
+            <param name="bResizeContentToPaletteSize"> Input Boolean that determines whether the content should be resized to fit the palette</param>
         </member>
         <member name="M:Autodesk.AutoCAD.Windows.PaletteSet.AddVisual(System.String,System.Windows.Media.Visual)">
             <summary>Adds a visual window.</summary>
             <param name="name"> Input palette name</param>
             <param name="control"> Input visual control</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.Windows.PaletteSet.AddVisualBrowser(System.String,System.Windows.Media.Visual,System.String,System.String,System.Boolean)">
+            <summary>Adds a visual browser control to a palette. Note: Related to the Blocks palette.</summary>
+            <param name="name"> Input palette name</param>
+            <param name="control"> Input visual control</param>
+            <param name="htmlPage"> Input string that indicates the HTML page to load</param>
+            <param name="scriptableName"> Input string that sets the name for the control to use in a script</param>
+            <param name="bShowBrowserFirst"> Input Boolean that specifies whether the HTML page should be displayed</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.Windows.PaletteSet.switchVisualBrowser(System.Int32,System.Boolean,System.String)">
+            <summary>Switches the current tab to a specific tab and controls the display of the content on the tab. Note: Related to the Blocks palette and is for internal use only.</summary>
+            <param name="index"> Input integer that references which tab to set current</param>
+            <param name="bVisual"> Input Boolean that controls whether the content is displayed</param>
+            <param name="url"> Input string that specifies the URL to the related content</param>
         </member>
         <member name="M:Autodesk.AutoCAD.Windows.PaletteSet.FloatControl(System.Windows.Rect)">
             <summary>Floats the PaletteSet with area position and size specified by the Rectangle.</summary>
@@ -213,10 +249,10 @@ A return of true indicates the function was successful.</summary>
             <summary>Occurs when the palette is given a context menu.</summary>
         </member>
         <member name="E:Autodesk.AutoCAD.Windows.PaletteSet.PaletteSetHostMoved">
-            <summary>Occurs just prior to a change in position and size.</summary>
+            <summary>Occurs after a palette has changed locations.</summary>
         </member>
         <member name="E:Autodesk.AutoCAD.Windows.PaletteSet.PaletteSetEnterSizeMove">
-            <summary>Occurs after a size or move operation has completed.</summary>
+            <summary>Occurs when the user clicks and holds the mouse button over the bottom right corner of a palette and begins to resize the palette.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.Windows.PaletteSet.Style">
             <summary>Returns the palette set style.</summary>
@@ -312,7 +348,7 @@ A return of true indicates the function was successful.</summary>
             <summary>Occurs when the ContextMenuExtension object is displayed by AutoCAD.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.Windows.ContextMenuExtension.Title">
-            <summary>Returns a string representing title.</summary>
+            <summary>Gets a string representing title.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.Windows.DropTarget">
             <summary>Applications derive from this class to implement custom drag-and-drop behavior in AutoCAD.</summary>
@@ -355,7 +391,7 @@ A return of true indicates the function was successful.</summary>
             <summary>This .NET class wraps the AcTrayItemBubbleWindowControl ObjectARX class.</summary>
         </member>
         <member name="E:Autodesk.AutoCAD.Windows.TrayItemBubbleWindow.Closed">
-            <summary>Wraps the following functions: AcTrayItemBubbleWindowControl.SetCallback, AcTrayItemBubbleWindowControl.GetCallbackDataAcTrayItemBubbleWindowControl.SetCallback sets the callback function and callback data for the bubble window.</summary>
+            <summary>Wraps the following functions: AcTrayItemBubbleWindowControl.SetCallback, AcTrayItemBubbleWindowControl.GetCallbackDataAcTrayItemBubbleWindowControl.SetCallback sets the callback function and callback data for the bubble window.AcTrayItemBubbleWindowControl.GetCallbackData returns a pointer to the bubble window's callback data.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.Windows.TrayItemBubbleWindow.IconType">
             <summary>Wraps the following functions: AcTrayItemBubbleWindowControl.GetIconType, AcTrayItemBubbleWindowControl.SetIconType
@@ -701,6 +737,10 @@ This property accesses the bubble window icon type that is displayed in the uppe
             <param name="htmlPage"> URI of the page to be loaded into the modal window.</param>
             <param name="persistSizeAndPosition"> Saves the current size and position of the window if set to true.</param>
         </member>
+        <member name="M:Autodesk.AutoCAD.ApplicationServices.Application.CommitModalWindow(System.Boolean)">
+            <summary>Dismisses the modal HTML dialog.</summary>
+            <param name="commitValue"> Input Boolean that defines whether to dismiss the dialog box.</param>
+        </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.Application.ShowModelessWindow(System.Uri)">
             <summary>Launches a modeless dialog with the specified URI.</summary>
             <param name="htmlPage"> URI of the page to be loaded into the modeless window.</param>
@@ -728,6 +768,9 @@ This property accesses the bubble window icon type that is displayed in the uppe
         <member name="P:Autodesk.AutoCAD.ApplicationServices.Application.DocumentWindowCollection">
             <summary>Accesses the collection of DocumentWindow objects.</summary>
         </member>
+        <member name="P:Autodesk.AutoCAD.ApplicationServices.Application.NonInPlaceMainWindow">
+            <summary>Accesses the 'real' AutoCAD main window even when it is running as an in-place server.</summary>
+        </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.Application.StatusBar">
             <summary>Accesses the status bar.</summary>
         </member>
@@ -742,9 +785,6 @@ This property accesses the bubble window icon type that is displayed in the uppe
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.Application.InfoCenter">
             <summary>Accesses the InfoCenter property.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.ApplicationServices.Application.IsSteelInstalled">
-            <summary>This is IsSteelInstalled, a member of class Application.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.Windows.InfoCenter">
             <summary>This class manages the InfoCenter Manager and connects it with the InfoCenter toolbar.</summary>
@@ -775,10 +815,150 @@ This property accesses the bubble window icon type that is displayed in the uppe
             <summary>This is UPIXMLData, a member of class InfoCenter.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.ApplicationServices.DocumentWindowActivatedEventArgs">
-            <summary>Used in DocumentWindowActivated event as event args<.</summary>
+            <summary>Used in DocumentWindowActivated event as event args.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.DocumentWindowActivatedEventArgs.DocumentWindow">
-            <summary>Identify which document window is activated.</summary>
+            <summary>Identify of the document window that was just activated.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.ApplicationServices.DocumentWindowFloatedOrDockedEventArgs">
+            <summary>This is the base class for the DocumentWindowDockedEventArgs,DocumentWindowFloatedEventArgs, and DocumentWindowToBeDockedEventArgs classes.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.ApplicationServices.DocumentWindowFloatedOrDockedEventArgs.DocumentWindow">
+            <summary>Identify of the document window that was docked or floated.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.ApplicationServices.DocumentWindowFloatedEventArgs">
+            <summary>This class provides data for the DocumentWindowFloated event of the DocumentWindowCollection class.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.ApplicationServices.DocumentWindowDockedEventArgs">
+            <summary>This class provides data for the DocumentWindowDocked event of the DocumentWindowCollection class.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.ApplicationServices.DocumentWindowToBeDockedEventArgs">
+            <summary>This class provides data for the DocumentWindowToBeDocked event of the DocumentWindowCollection class.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.ApplicationServices.DocumentWindowFloatedEventHandler">
+            <summary>A delegate implemented by observers that are interested in document window floated events.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.ApplicationServices.DocumentWindowDockedEventHandler">
+            <summary>A delegate implemented by observers that are interested in document window docked events.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.ApplicationServices.DocumentWindowToBeDockedEventHandler">
+            <summary>A delegate implemented by observers that are interested in document window to be docked events.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.PalettePersistEventArgs">
+            <summary>This class provides data for the PalettePersist event.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.Windows.PalettePersistEventArgs.#ctor(Autodesk.AutoCAD.ApplicationServices.IConfigurationSection)">
+            <summary>Constructor.</summary>
+            <param name="configurationSection"> Input configuration section</param>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PalettePersistEventArgs.ConfigurationSection">
+            <summary>Returns the ConfigurationSection property value.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.PaletteSetStateEventArgs">
+            <summary>This class provides data for the PaletteSetState event.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.Windows.PaletteSetStateEventArgs.#ctor(Autodesk.AutoCAD.Windows.StateEventIndex)">
+            <summary>Constructs a new event argument with a given state.</summary>
+            <param name="state"> Input event index state</param>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PaletteSetStateEventArgs.NewState">
+            <summary>Returns the NewState property value.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.StateEventIndex">
+            <summary>This enum indexes various palette set states.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.PaletteSetFocusedEventArgs">
+            <summary>This is class Autodesk.AutoCAD.Windows.PaletteSetFocusedEventArgs.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.PaletteSetSizeEventArgs">
+            <summary>This class provides event parameters related to the size-setting events in the palette set.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.Windows.PaletteSetSizeEventArgs.#ctor(System.Int32,System.Int32,System.Double,System.Double)">
+            <summary>This constructs an object with information for pixel and device-independent units.</summary>
+            <param name="cx"> Input pixel width</param>
+            <param name="cy"> Input pixel height</param>
+            <param name="dx"> Input device-independent width</param>
+            <param name="dy"> Input device-independent height</param>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PaletteSetSizeEventArgs.Width">
+            <summary>Accesses the width of the palette set.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PaletteSetSizeEventArgs.Height">
+            <summary>Accesses the height of the palette set.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PaletteSetSizeEventArgs.DeviceIndependentWidth">
+            <summary>Accesses the device independent width value.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PaletteSetSizeEventArgs.DeviceIndependentHeight">
+            <summary>Accesses the device independent height value.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.PaletteActivatedEventArgs">
+            <summary>This class provides data for the PaletteActivated event.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.Windows.PaletteActivatedEventArgs.#ctor(Autodesk.AutoCAD.Windows.Palette,Autodesk.AutoCAD.Windows.Palette)">
+            <summary>Constructs a new event argument.</summary>
+            <param name="activated"> Input palette to display when activated</param>
+            <param name="deactivated"> Input palette to display when deactivated</param>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PaletteActivatedEventArgs.Activated">
+            <summary>Returns the Activated property value.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PaletteActivatedEventArgs.Deactivated">
+            <summary>Returns the Deactivated property value.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.Palette">
+            <summary>This .NET class wraps the CAdUiPalette ObjectARX class.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.Palette.Name">
+            <summary>Accesses the name of the palette.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.Palette.PaletteSet">
+            <summary>Accesses the palette set this palette is a part of.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.PaletteAddContextMenuEventArgs">
+            <summary>This class provides data for the PaletteAddContextMenu event.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PaletteAddContextMenuEventArgs.MenuItems">
+            <summary>Accesses the a collection of the menu items.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PaletteAddContextMenuEventArgs.RemoveMenuItems">
+            <summary>Accesses a list of the removed menu items.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PaletteAddContextMenuEventArgs.HitFlag">
+            <summary>Location within the palette set of the event that triggered the context menu.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PaletteAddContextMenuEventArgs.RightClickTab">
+            <summary>Accesses the palette tab of the tab for which the context menu is being displayed.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.PaletteEnterSizeMoveEventArgs">
+            <summary>This is class Autodesk.AutoCAD.Windows.PaletteEnterSizeMoveEventArgs.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.Windows.PaletteEnterSizeMoveEventArgs.#ctor(System.Boolean)">
+            <summary>This is PaletteEnterSizeMoveEventArgs, a member of class PaletteEnterSizeMoveEventArgs.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.PaletteEnterSizeMoveEventArgs.EnterSizeMove">
+            <summary>This is EnterSizeMove, a member of class PaletteEnterSizeMoveEventArgs.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.PaletteSetStyles">
+            <summary>This class represents palette set styles.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.DockSides">
+            <summary>This class represents values that indicate the current docked site or the potential dock sites for a window.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.PaletteSetTitleBarLocation">
+            <summary>This enum represents values indicating the title bar location for a palette set.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Windows.PaletteSetDockSite">
+            <summary>This is class Autodesk.AutoCAD.Windows.PaletteSetDockSite.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.Windows.PaletteSetDockSite.Uninitialize">
+            <summary>This is Uninitialize, a member of class PaletteSetDockSite.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.Windows.PaletteSetDockSite.Dock(Autodesk.AutoCAD.Windows.PaletteSet)">
+            <summary>This is Dock, a member of class PaletteSetDockSite.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.ApplicationServices.DocumentCollectionExtension">
+            <summary>.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.ApplicationServices.DocumentExtension">
             <summary>.</summary>
@@ -786,9 +966,6 @@ This property accesses the bubble window icon type that is displayed in the uppe
         <member name="M:Autodesk.AutoCAD.ApplicationServices.DocumentExtension.FromAcadDocument(System.Object)">
             <summary>Converts an object into a Document.</summary>
             <param name="acadDocument"> Input the object to be converted</param>
-        </member>
-        <member name="T:Autodesk.AutoCAD.ApplicationServices.DocumentCollectionExtension">
-            <summary>.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.Windows.DrawingDocumentWindow">
             <summary>Wrapper (wraps AcApDwgDocWindow).</summary>
@@ -814,19 +991,19 @@ This property accesses the bubble window icon type that is displayed in the uppe
             <summary>Constructor.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditorSettings.Flags">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditorSettings::editFlags() and AcEdInplaceTextEditorSettings::setEditFlags() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditorSettings::editFlags() and AcEdInplaceTextEditorSettings::setEditFlags().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditorSettings.Type">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditorSettings::sourceEntityType() and AcEdInplaceTextEditorSettings::setSourceEntityType() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditorSettings::sourceEntityType() and AcEdInplaceTextEditorSettings::setSourceEntityType().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditorSettings.TabSupported">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditorSettings::tabSupported() and AcEdInplaceTextEditorSettings::setSupportTab() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditorSettings::tabSupported() and AcEdInplaceTextEditorSettings::setSupportTab().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditorSettings.SimpleMText">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditorSettings::simpleMText() and AcEdInplaceTextEditorSettings::setSimpleMText() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditorSettings::simpleMText() and AcEdInplaceTextEditorSettings::setSimpleMText().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditorSettings.DefinedHeight">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditorSettings::definedHeight() and AcEdInplaceTextEditorSettings::setDefinedHeight() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditorSettings::definedHeight() and AcEdInplaceTextEditorSettings::setDefinedHeight().</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor">
             <summary>This .NET class wraps the ObjectARX AcEdInplaceTextEditor class.</summary>
@@ -835,10 +1012,10 @@ This property accesses the bubble window icon type that is displayed in the uppe
             <summary>This wraps AcEdInplaceTextEditor::invoke(AcDbMText* pMtext, const AcEdInplaceTextEditorSettings* pSettings).</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.Undo">
-            <summary>This wrapsAcEdInplaceTextEditor::undo().</summary>
+            <summary>This wraps AcEdInplaceTextEditor::undo().</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.Redo">
-            <summary>This wrapsAcEdInplaceTextEditor::redo().</summary>
+            <summary>This wraps AcEdInplaceTextEditor::redo().</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.Cut">
             <summary>This wraps AcEdInplaceTextEditor::cut().</summary>
@@ -865,7 +1042,7 @@ This property accesses the bubble window icon type that is displayed in the uppe
             <summary>This wraps AcEdInplaceTextEditor::drawHighlight().</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.RemoveHightlight">
-            <summary>This wrapsAcEdInplaceTextEditor::removeHightlight().</summary>
+            <summary>This wraps AcEdInplaceTextEditor::removeHightlight().</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.InsertFile(System.String)">
             <summary>This wraps AcEdInplaceTextEditor::insertFile().</summary>
@@ -874,10 +1051,10 @@ This property accesses the bubble window icon type that is displayed in the uppe
             <summary>This wraps AcEdInplaceTextEditor::otherSymbol().</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.ParagraphDialog">
-            <summary>This wrapsAcEdInplaceTextEditor::invokeParagraphDialog().</summary>
+            <summary>This wraps AcEdInplaceTextEditor::invokeParagraphDialog().</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.WipeoutDialog">
-            <summary>This wrapsAcEdInplaceTextEditor::invokeWipeoutDialog().</summary>
+            <summary>This wraps AcEdInplaceTextEditor::invokeWipeoutDialog().</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.ColumnsDialog(System.Int32)">
             <summary>This .NET method wraps the ObjectARX AcEdInplaceTextEditor::invokeColumnsDialog method.</summary>
@@ -886,7 +1063,7 @@ This property accesses the bubble window icon type that is displayed in the uppe
             <summary>This wraps AcEdInplaceTextEditor::invokeFindReplaceDialog().</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.ImportTextDialog">
-            <summary>This wrapsAcEdInplaceTextEditor::invokeImportTextDialog().</summary>
+            <summary>This wraps AcEdInplaceTextEditor::invokeImportTextDialog().</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.FieldDialog(Autodesk.AutoCAD.DatabaseServices.Field)">
             <summary>This wraps AcEdInplaceTextEditor::invokeFieldDialog().</summary>
@@ -894,8 +1071,8 @@ This property accesses the bubble window icon type that is displayed in the uppe
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.SpellSettingDialog">
             <summary>This wraps AcEdInplaceTextEditor::invokeSpellSettingDialog().</summary>
         </member>
-        <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.SpellDictinaryDialog">
-            <summary>This wraps AcEdInplaceTextEditor::invokeSpellerDictinaryDialog().</summary>
+        <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.SpellDictionaryDialog">
+            <summary>This wraps AcEdInplaceTextEditor::invokeSpellerDictionaryDialog().</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.HightlightColorDialog">
             <summary>This wraps AcEdInplaceTextEditor::invokeHightlightColorDialog().</summary>
@@ -919,7 +1096,7 @@ This property accesses the bubble window icon type that is displayed in the uppe
             <summary>This wraps AcEdInplaceTextEditor::lineSpaceMenusInput().</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.NumberingMenus(System.Drawing.Point,Autodesk.AutoCAD.Windows.Window)">
-            <summary>This wrapsAcEdInplaceTextEditor::numberingMenusInput().</summary>
+            <summary>This wraps AcEdInplaceTextEditor::numberingMenusInput().</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.SymbolMenus(System.Drawing.Point,Autodesk.AutoCAD.Windows.Window)">
             <summary>This wraps AcEdInplaceTextEditor::symbolMenusInput().</summary>
@@ -937,13 +1114,13 @@ This property accesses the bubble window icon type that is displayed in the uppe
             <summary>This wraps AcEdInplaceTextEditor::canUndo().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.CanRedo">
-            <summary>This wrapsAcEdInplaceTextEditor::canRedo().</summary>
+            <summary>This wraps AcEdInplaceTextEditor::canRedo().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.Annotative">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditor::annotative() and AcEdInplaceTextEditor::setAnnotative() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditor::annotative() and AcEdInplaceTextEditor::setAnnotative().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.TableCell">
-            <summary>This wrapsAcEdInplaceTextEditor::isTableCell().</summary>
+            <summary>This wraps AcEdInplaceTextEditor::isTableCell().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.SimpleMText">
             <summary>This wraps AcEdInplaceTextEditor::isSimpleMtext().</summary>
@@ -958,28 +1135,28 @@ This property accesses the bubble window icon type that is displayed in the uppe
             <summary>This wraps AcEdInplaceTextEditor::isParagraphSupported().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.SpellerEnabled">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditor::spellerEnabled() and AcEdInplaceTextEditor::toggleSpelling() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditor::spellerEnabled() and AcEdInplaceTextEditor::toggleSpelling().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.RulerSupported">
             <summary>This wraps AcEdInplaceTextEditor::rulerSupported().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.RulerHidden">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditor::rulerHidden() and AcEdInplaceTextEditor::setRulerHidden() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditor::rulerHidden() and AcEdInplaceTextEditor::setRulerHidden().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.OpaqueBackground">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditor::opaqueBackground() and AcEdInplaceTextEditor::setOpaqueBackground() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditor::opaqueBackground() and AcEdInplaceTextEditor::setOpaqueBackground().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.ForcedOpaqueBackground">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditor::forcedOpaqueBackground().</summary>
+            <summary>This wraps AcEdInplaceTextEditor::forcedOpaqueBackground().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.ToolbarHidden">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditor::toolbarHidden() and AcEdInplaceTextEditor::setToolbarHidden() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditor::toolbarHidden() and AcEdInplaceTextEditor::setToolbarHidden().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.ToolbarOptionHidden">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditor::toolbarOptionHidden() and AcEdInplaceTextEditor::setToolbarOptionHidden() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditor::toolbarOptionHidden() and AcEdInplaceTextEditor::setToolbarOptionHidden().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.CanExitEditor">
-            <summary>This wraps the ObjectARX AcEdInplaceTextEditor::canExitInplaceEditor() and AcEdInplaceTextEditor::setCanExitInplaceEditor() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditor::canExitInplaceEditor() and AcEdInplaceTextEditor::setCanExitInplaceEditor().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.LayerColor">
             <summary>This wraps AcEdInplaceTextEditor::layerColor().</summary>
@@ -988,10 +1165,10 @@ This property accesses the bubble window icon type that is displayed in the uppe
             <summary>This wraps AcEdInplaceTextEditor::getAlignmentFromAttachment().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.Wysiwyg">
-            <summary>This wraps AcEdInplaceTextEditor::wysiwyg() and AcEdInplaceTextEditor::enableWysiwyg() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditor::wysiwyg() and AcEdInplaceTextEditor::enableWysiwyg().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.UndoRecordingDisabled">
-            <summary>This wraps AcEdInplaceTextEditor::undoRecordingDisabled(), AcEdInplaceTextEditor::setUndoRecordingDisable() methods.</summary>
+            <summary>This wraps AcEdInplaceTextEditor::undoRecordingDisabled() and AcEdInplaceTextEditor::setUndoRecordingDisable().</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.InplaceTextEditor.CanCut">
             <summary>This wraps AcEdInplaceTextEditor::canCut().</summary>
@@ -1182,6 +1359,18 @@ This property accesses the bubble window icon type that is displayed in the uppe
         <member name="P:Autodesk.AutoCAD.Windows.OpenFileDialog.Filename">
             <summary>The filename chosen by the user.</summary>
         </member>
+        <member name="T:Autodesk.AutoCAD.Windows.OpenFileOrFolderDialog">
+            <summary>This is class Autodesk.AutoCAD.Windows.OpenFileOrFolderDialog.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.Windows.OpenFileOrFolderDialog.#ctor(System.String,System.String,System.String,System.String,Autodesk.AutoCAD.Windows.OpenFileDialog.OpenFileDialogFlags)">
+            <summary>This is OpenFileOrFolderDialog, a member of class OpenFileOrFolderDialog.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.Windows.OpenFileOrFolderDialog.ShowDialog">
+            <summary>This is ShowDialog, a member of class OpenFileOrFolderDialog.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Windows.OpenFileOrFolderDialog.FileOrFoldername">
+            <summary>This is FileOrFoldername, a member of class OpenFileOrFolderDialog.</summary>
+        </member>
         <member name="T:Autodesk.AutoCAD.Windows.SaveFileDialog">
             <summary>This class represents a dialog box that allows the user to choose a file.</summary>
         </member>
@@ -1231,126 +1420,13 @@ This property accesses the bubble window icon type that is displayed in the uppe
             <summary>This class represents a dialog box that allows the user to choose a plot style.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.Windows.PlotStyleDialog.ShowDialog">
-            <summary>Shows plot style dialog box.</summary>
+            <summary>Shows the plot style dialog box.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.Windows.PlotStyleDialog.IncludeByBlockByLayer">
             <summary>True if meta plotstyles are to be included, otherwise false.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.Windows.PlotStyleDialog.PlotStyle">
-            <summary>Accesses the plotstyle value.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.PalettePersistEventArgs">
-            <summary>This class provides data for the PalettePersist event.</summary>
-        </member>
-        <member name="M:Autodesk.AutoCAD.Windows.PalettePersistEventArgs.#ctor(Autodesk.AutoCAD.ApplicationServices.IConfigurationSection)">
-            <summary>Constructor.</summary>
-            <param name="configurationSection"> Input configuration section</param>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PalettePersistEventArgs.ConfigurationSection">
-            <summary>Returns the ConfigurationSection property value.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.PaletteSetStateEventArgs">
-            <summary>This class provides data for the PaletteSetState event.</summary>
-        </member>
-        <member name="M:Autodesk.AutoCAD.Windows.PaletteSetStateEventArgs.#ctor(Autodesk.AutoCAD.Windows.StateEventIndex)">
-            <summary>COnstructs a new event argument with a given state.</summary>
-            <param name="state"> Input event index state</param>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PaletteSetStateEventArgs.NewState">
-            <summary>Returns the NewState property value.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.StateEventIndex">
-            <summary>This enum indexes various palette set states.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.PaletteSetFocusedEventArgs">
-            <summary>This is class Autodesk.AutoCAD.Windows.PaletteSetFocusedEventArgs.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.PaletteSetSizeEventArgs">
-            <summary>This class provides event parameters related to the size-setting events in the palette set.</summary>
-        </member>
-        <member name="M:Autodesk.AutoCAD.Windows.PaletteSetSizeEventArgs.#ctor(System.Int32,System.Int32,System.Double,System.Double)">
-            <summary>This constructs an object with information for pixel and device-independent units.</summary>
-            <param name="cx"> Input pixel width</param>
-            <param name="cy"> Input pixel height</param>
-            <param name="dx"> Input device-independent width</param>
-            <param name="dy"> Input device-independent height</param>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PaletteSetSizeEventArgs.Width">
-            <summary>Accesses the width of the palette set.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PaletteSetSizeEventArgs.Height">
-            <summary>Accesses the height of the palette set.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PaletteSetSizeEventArgs.DeviceIndependentWidth">
-            <summary>Accesses the device independent width value.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PaletteSetSizeEventArgs.DeviceIndependentHeight">
-            <summary>Accesses the device independent height value.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.PaletteActivatedEventArgs">
-            <summary>This class provides data for the PaletteActivated event.</summary>
-        </member>
-        <member name="M:Autodesk.AutoCAD.Windows.PaletteActivatedEventArgs.#ctor(Autodesk.AutoCAD.Windows.Palette,Autodesk.AutoCAD.Windows.Palette)">
-            <summary>Constructs a new event argument.</summary>
-            <param name="activated"> Input palette to display when activated</param>
-            <param name="deactivated"> Input palette to display when deactivated</param>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PaletteActivatedEventArgs.Activated">
-            <summary>Returns the Activated property value.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PaletteActivatedEventArgs.Deactivated">
-            <summary>Returns the Deactivated property value.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.Palette">
-            <summary>This .NET class wraps the CAdUiPalette ObjectARX class.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.Palette.Name">
-            <summary>Accesses the name of the palette.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.Palette.PaletteSet">
-            <summary>Accesses the palette set this palette is a part of.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.PaletteAddContextMenuEventArgs">
-            <summary>This class provides data for the PaletteAddContextMenu event.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PaletteAddContextMenuEventArgs.MenuItems">
-            <summary>Accesses the a collection of the menu items.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PaletteAddContextMenuEventArgs.RemoveMenuItems">
-            <summary>Accesses a list of the removed menu items.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PaletteAddContextMenuEventArgs.HitFlag">
-            <summary>Location within the palette set of the event that triggered the context menu.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PaletteAddContextMenuEventArgs.RightClickTab">
-            <summary>Accesses the palette tab of the tab for which the context menu is being displayed.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.PaletteEnterSizeMoveEventArgs">
-            <summary>This is class Autodesk.AutoCAD.Windows.PaletteEnterSizeMoveEventArgs.</summary>
-        </member>
-        <member name="M:Autodesk.AutoCAD.Windows.PaletteEnterSizeMoveEventArgs.#ctor(System.Boolean)">
-            <summary>This is PaletteEnterSizeMoveEventArgs, a member of class PaletteEnterSizeMoveEventArgs.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.Windows.PaletteEnterSizeMoveEventArgs.EnterSizeMove">
-            <summary>This is EnterSizeMove, a member of class PaletteEnterSizeMoveEventArgs.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.PaletteSetStyles">
-            <summary>This class represents palette set styles.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.DockSides">
-            <summary>This class represents values that indicate the current docked site or the potential dock sites for a window.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.PaletteSetTitleBarLocation">
-            <summary>This class represents values indicating the title bar location for a palette set.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.Windows.PaletteSetDockSite">
-            <summary>This is class Autodesk.AutoCAD.Windows.PaletteSetDockSite.</summary>
-        </member>
-        <member name="M:Autodesk.AutoCAD.Windows.PaletteSetDockSite.Uninitialize">
-            <summary>This is Uninitialize, a member of class PaletteSetDockSite.</summary>
-        </member>
-        <member name="M:Autodesk.AutoCAD.Windows.PaletteSetDockSite.Dock(Autodesk.AutoCAD.Windows.PaletteSet)">
-            <summary>This is Dock, a member of class PaletteSetDockSite.</summary>
+            <summary>Accesses the plot style value.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.Windows.ToolPalette.PerPropertyBrowsingEntryAttribute">
             <summary>This class encapsulates properties of IPerPropertyBrowsing objects implemented for a tool palette.</summary>

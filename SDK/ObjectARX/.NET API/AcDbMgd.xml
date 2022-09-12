@@ -1853,10 +1853,6 @@ This method, if you implement it, should allow the user transparent access to fi
             <param name="url"> Input URL to which to upload file</param>
             <param name="localFile"> Input local file to upload</param>
         </member>
-        <member name="M:Autodesk.AutoCAD.DatabaseServices.HostApplicationServices.IsCloudFile(System.String)">
-            <summary>Determine whether a given string is a valid Cloud file.</summary>
-            <param name="filePath"> Input cloud file.</param>
-        </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.HostApplicationServices.GetEnvironmentVariable(System.String)">
             <summary>This is GetEnvironmentVariable, a member of class HostApplicationServices.</summary>
         </member>
@@ -3005,7 +3001,8 @@ When a surface is created, the normal evaluation formula is set to the one with 
             <summary>Accesses the RXClass of the object that is associated with the object id, thus guaranteeing that the result can be safely de-referenced and correctly compared against any class derived from DBObject.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.ObjectId.OldId">
-            <summary>Obsolete - Use the OldIdPtr property instead.</summary>
+            <summary>Obsolete - Use the OldIdPtr property instead 
+Accesses the objectId value as a long, which is the old format (an is an array of two longs, the first element of which contains the same value as that in an objectId).</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.ObjectId.OldIdPtr">
             <summary>Accesses the objectId value as a long, which is the old format (an is an array of two longs, the first element of which contains the same value as that in an objectId).</summary>
@@ -3433,6 +3430,18 @@ When a surface is created, the normal evaluation formula is set to the one with 
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.SecurityParameters.TimeServer">
             <summary>Returns the name of the time server used for timestamping.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Runtime.FileOperations">
+            <summary>This .NET class wraps the AcDbFileOperationReactor ObjectARX class which is used to get all DWG/DXF file open and close operations.</summary>
+        </member>
+        <member name="E:Autodesk.AutoCAD.Runtime.FileOperations.FileWillOpen">
+            <summary>Occurs when the drawing is about to be opened.</summary>
+        </member>
+        <member name="E:Autodesk.AutoCAD.Runtime.FileOperations.FileOpenAborted">
+            <summary>Occurs when the opening of the drawing has been aborted.</summary>
+        </member>
+        <member name="E:Autodesk.AutoCAD.Runtime.FileOperations.FileHasClosed">
+            <summary>Occurs when the drawing has been closed.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.DatabaseServices.CellRange">
             <summary>This class represents ranges of table cells.</summary>
@@ -3905,6 +3914,9 @@ When asCmd is False, it's possible to call this method more than once and still 
         </member>
         <member name="P:Autodesk.AutoCAD.Runtime.Variable.Range">
             <summary>Gets the RangeInfo object that provides the valid range of the variable or NULL if no range restriction was specified.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.GraphicsSystem.RenderType">
+            <summary>This .NET enum wraps the AcGsModel::RenderType ObjectARX enum.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.Runtime.WrapperAttribute">
             <summary>This class defines an attribute that identifies the corresponding wrapped ObjectARX class or member.</summary>
@@ -5316,6 +5328,15 @@ This function must have been preceded by a call to upgradeFromNotify().</summary
             <summary>Gets the xdatafrom the identified application.</summary>
             <param name="applicationName"> Name of the registered application to use when retrieving the xdata</param>
         </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.DBObject.GetBinaryDataForKey(System.String)">
+            <summary>This function reads a chunk of binary data from this object's extension dictionary.</summary>
+            <param name="key"> Input extension dictionary key under which the data is stored</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.DBObject.SetBinaryDataForKey(System.String,System.Byte[])">
+            <summary>This function copies the binary data in the chunk array into this object's extension dictionary.</summary>
+            <param name="key"> Input extension dictionary key to be used</param>
+            <param name="chunk"> Input a flat array of bytes that are the binary data to save</param>
+        </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.DBObject.DisableUndoRecording(System.Boolean)">
             <summary>Turns off or on the Undo recording for the object. If disable is set to true, then Undo recording is turned off.</summary>
             <param name="disable"> Boolean indicating to turn off or on Undo recording</param>
@@ -5495,6 +5516,21 @@ This function must have been preceded by a call to upgradeFromNotify().</summary
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.#ctor">
             <summary>Default constructor.</summary>
         </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.GetAllDatabases">
+            <summary>Returns an array of all currently active databases.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.EvaluateFields(Autodesk.AutoCAD.DatabaseServices.FieldEvaluationContext,System.String)">
+            <summary>Evaluates the fields defined in annotation objects.</summary>
+            <param name="context"> Input bitwise value that determines the contexts in which fields should be evaluated. Refer to the DatabaseServices.FieldEvaluationContext enum for available context values.</param>
+            <param name="prop"> Input property name whose field is to be evaluated; if empty, all fields are evaluated</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.EvaluateFields(Autodesk.AutoCAD.DatabaseServices.FieldEvaluationContext)">
+            <summary>Evaluates the fields defined in annotation objects.</summary>
+            <param name="context"> Input bitwise value that determines the contexts in which fields should be evaluated. Refer to the DatabaseServices.FieldEvaluationContext enum for available context values.</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.EvaluateFields">
+            <summary>Evaluates the fields defined in annotation objects.</summary>
+        </member>
         <member name="E:Autodesk.AutoCAD.DatabaseServices.Database.DwgFileOpened">
             <summary>Wraps AcRxEventReactor::dwgFileOpened.</summary>
         </member>
@@ -5673,6 +5709,9 @@ This function must have been preceded by a call to upgradeFromNotify().</summary
             <summary>This function enumerates the Viewports in a drawing.</summary>
             <param name="bGetPaperspaceVports"> Input flag indicating whether to return paperspace viewports associated with layouts</param>
         </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.FromAcadDatabase(System.Object)">
+            <summary>Converts a COM object of the type AcadDatabase to a Database object.</summary>
+        </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.ResetTimes">
             <summary>This function resets the Database TDCREATE, TDUPDATE, TDINDWG, and TDUSRTIMER to the settings for a new drawing (TDCREATE and TDUPDATE to the current date/time, and TDINDWG and TDUSRTIMER to 0).</summary>
         </member>
@@ -5796,7 +5835,7 @@ This function should only be used on a newly created Database that was created w
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.DxfOut(System.String,System.Int32,Autodesk.AutoCAD.DatabaseServices.DwgVersion)">
             <summary>This function creates an DXF file.</summary>
             <param name="fileName"> Input name or URL of the new DXF file to create (the .dxf extension is not added automatically)</param>
-            <param name="precision"> Number of bits of accuracy, from 0 to 16</param>
+            <param name="precision"> Input number of bits of accuracy, from 0 to 16</param>
             <param name="version"> Sets the DWG version major and minor number</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.DxfOut(System.String,System.Int32,System.Boolean)">
@@ -5804,7 +5843,7 @@ This function should only be used on a newly created Database that was created w
 Note
 The precision may also be set to -1 to change the output format from the default ASCII DXF format to the binary DXF format.</summary>
             <param name="fileName"> Input name or URL of the new DXF file to create (the .dxf extension is not added automatically)</param>
-            <param name="precision"> Number of bits of accuracy, from 0 to 16</param>
+            <param name="precision"> Input number of bits of accuracy, from 0 to 16</param>
             <param name="saveThumbnailImage"> Input Boolean indicating whether to save thumbnail</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.CloseInput(System.Boolean)">
@@ -5866,6 +5905,14 @@ The ObjectIds in xrefSymbolIds must all be from the working database and they mu
             <summary>This function loads the MlineStyle specified by mlineStyleName from the file specified by fileName.</summary>
             <param name="mlineStyleName"> Input MlineStyle name string (no wild cards)</param>
             <param name="fileName"> Input path/filename or URL of file to load from (path is optional)</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.DxfOutEx(System.String,System.Int32,Autodesk.AutoCAD.DatabaseServices.DwgVersion,System.Boolean,System.Int32)">
+            <summary>Saves this drawing to a DXF file and allows the caller to specify a code page.</summary>
+            <param name="fileName"> Input name or URL of the new DXF file to create (the .dxf extension is not added automatically)</param>
+            <param name="precision"> Input number of bits of accuracy, from 0 to 16</param>
+            <param name="version"> Input as a constant which represents the DXF format version to create, R12 through current</param>
+            <param name="saveThumbnailImage"> Input Boolean indicating whether to save thumbnail</param>
+            <param name="nCodePage"> Input code page to use for pre-2007 dxf formats</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.GetSupportedSaveVersions">
             <summary>Returns an array with the major and minor version numbers of the saving ability.</summary>
@@ -5932,6 +5979,9 @@ Newly created Database objects have Undo turned off. A call to this function wit
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Database.RestoreForwardingXrefSymbols">
             <summary>This function must be used with RestoreOriginalXrefSymbols(), and should be wrapped around all code with plans to edit and/or save Xref databases.</summary>
         </member>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.LayerNotify">
+            <summary>Accesses the value of the LAYEREVAL header variable.</summary>
+        </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.MsOleScale">
             <summary>Accesses the value of the LAYERNOTIFY header variable.</summary>
         </member>
@@ -5943,6 +5993,9 @@ Newly created Database objects have Undo turned off. A call to this function wit
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.HomeView">
             <summary>Accesses the navigation home view associated with the database.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.Dimlwe">
+            <summary>Accesses the current DIMLWE value for the dimension.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.Dimrnd">
             <summary>Accesses the current DIMRND value for the database.</summary>
@@ -6128,8 +6181,8 @@ See the System Variables section of the AutoCAD Command Reference for informatio
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.LayerEval">
             <summary>Accesses the LAYEREVAL header variable value.</summary>
         </member>
-        <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.LayerNotify">
-            <summary>Accesses the value of the LAYEREVAL header variable.</summary>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.TStackAlign">
+            <summary>Accesses the current TSTACKALIGN value for the database.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.TstackSize">
             <summary>Accesses the current TSTACKSIZE value for the database.</summary>
@@ -6323,8 +6376,8 @@ See the System Variables section of the AutoCAD Command Reference for informatio
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.Dimlwd">
             <summary>Accesses the current DIMLWD value for the dimension.</summary>
         </member>
-        <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.Dimlwe">
-            <summary>Accesses the current DIMLWE value for the dimension.</summary>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.Menu">
+            <summary>Accesses the menu display text.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.HpInherit">
             <summary>Accesses a bool indicating the current HPINHERIT value for the database.</summary>
@@ -6521,8 +6574,8 @@ See the System Variables section of the AutoCAD Command Reference for informatio
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.VersionGuid">
             <summary>Accesses the database's Version GUID string.</summary>
         </member>
-        <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.TStackAlign">
-            <summary>Accesses the current TSTACKALIGN value for the database.</summary>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.Limcheck">
+            <summary>Accesses the current Model Space LIMCHECK value for the database.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.Saveproxygraphics">
             <summary>Accesses the current PROXYGRAPHICS value for the database.</summary>
@@ -6710,9 +6763,6 @@ See the System Variables section of the AutoCAD Command Reference for informatio
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.Facetres">
             <summary>Accesses the current Model Space FACETRES value for the database.</summary>
         </member>
-        <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.Menu">
-            <summary>Accesses the menu display text.</summary>
-        </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.LayerTableId">
             <summary>Accesses the object ID of the database's LayerTable.</summary>
         </member>
@@ -6866,6 +6916,9 @@ See the System Variables section of the AutoCAD Command Reference for informatio
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.RetainOriginalThumbnailBitmap">
             <summary>Accesses the status of the thumbnail bitmap toggle flag.</summary>
         </member>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.IsEmr">
+            <summary>Returns the EMR flag for the database.</summary>
+        </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.SecurityParameters">
             <summary>Accesses the security parameters associated with this database.</summary>
         </member>
@@ -6892,9 +6945,6 @@ See the System Variables section of the AutoCAD Command Reference for informatio
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.Psltscale">
             <summary>Accesses the current PSLTSCALE value for the database.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.DatabaseServices.Database.Limcheck">
-            <summary>Accesses the current Model Space LIMCHECK value for the database.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.DatabaseServices.SubentityType">
             <summary>This .NET enum wraps the AcDb::SubentType ObjectARX enum.</summary>
@@ -7968,7 +8018,7 @@ For the ObjectARX internal filer classes used for DXF and AutoLISP or C++ functi
             <summary>Accesses the minor version number.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.DatabaseServices.MaintenanceReleaseVersion">
-            <summary>This .NET class wraps the AcDb::MaintenanceReleaseVersion ObjectARX enum.</summary>
+            <summary>This .NET class wraps the AcDb::MaintenanceReleaseVersion ObjectARX enumerated type.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.DatabaseServices.DxfCode">
             <summary>This .NET class wraps the AcDb::DxfCode ObjectARX enum.</summary>
@@ -8799,7 +8849,7 @@ The unique identifier should be invariant for the lifetime of this object and is
             <summary>Assesses if this layer has any property overrides associated with any viewport in the drawing.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.DatabaseServices.LineWeight">
-            <summary>This .NET class wraps the AcDb::LineWeight ObjectARX class.</summary>
+            <summary>This .NET class wraps the AcDb::LineWeight ObjectARX enumerated type.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.DatabaseServices.LayerViewportProperties">
             <summary>Defines further properties of the layer viewports in LayerTableRecord.</summary>
@@ -9644,6 +9694,15 @@ This function may return null if the filter cannot be described this way.</summa
         </member>
         <member name="T:Autodesk.AutoCAD.DatabaseServices.FieldEvaluationStatus">
             <summary>This .NET enum wraps the AcDbField::EvalStatus ObjectARX enum.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.DatabaseServices.FieldEvaluationResult">
+            <summary>This is class Autodesk.AutoCAD.DatabaseServices.FieldEvaluationResult.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.FieldEvaluationResult.Found">
+            <summary>This is Found, a member of class FieldEvaluationResult.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.FieldEvaluationResult.Evaluated">
+            <summary>This is Evaluated, a member of class FieldEvaluationResult.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.DatabaseServices.TransactionManager">
             <summary>This .NET class wraps the AcDbTransactionManager ObjectARX class.</summary>
@@ -10634,176 +10693,171 @@ If add == true, the object pointed to by obj is added to the top transaction. If
             <summary>Constructor.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetColumnName(System.Int32)">
-            <summary>Returns the columns name retrieved from the specified index.</summary>
+            <summary>Obsolete. Returns the columns name retrieved from the specified index.</summary>
             <param name="index"> Input zero based index of the column</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetColumnName(System.Int32,System.String)">
-            <summary>Sets a column's name; it can be left blank.</summary>
+            <summary>Obsolete. Sets a column's name; it can be left blank.</summary>
             <param name="index"> Input zero based index of the column</param>
             <param name="name"> Input column name to set. This can be an empty string.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetToolTip(System.Int32,System.Int32)">
-            <summary>Returns the tooltip string for cell, row, or column.</summary>
+            <summary>Obsolete. Returns the tooltip string for cell, row, or column.</summary>
             <param name="row"> Input row index. This can be -1.</param>
             <param name="column"> Input column index. This can be -1.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetToolTip(System.Int32,System.Int32,System.String)">
-            <summary>Sets the tooltip string for cell, row, or column.</summary>
+            <summary>Obsolete. Sets the tooltip string for cell, row, or column.</summary>
             <param name="row"> Input row index. This can be -1.</param>
             <param name="column"> Input column index. This can be -1.</param>
             <param name="toolTip"> Input tool tip string to set</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SuppressRegenerateTable(System.Boolean)">
-            <summary>This method allows the user to temporarily disable the regeneration of the table object during changes in one or more of its properties. 
+            <summary>This method allows the user to temporarily disable the regeneration of the table object during changes in one or more of its properties.
 Warning
 This method is provided for VBA applications to temporarily disable the regenerating of the table object. It is not intended for use in ObjectARX applications. Calling this function with suppress set to true disables regenerating the table object. The table object is recomputed when this function is called with suppress set to false. Before saving the table object to the drawing file, the user should either call this function with false value or call RecomputeTableBlock(true). Otherwise, the table object will never be displayed.</summary>
             <param name="suppress"> Input boolean value to suppress or enable the regeneration of a table object</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.ColumnWidth(System.Int32)">
-            <summary>Returns the column width at the specified column index in the table.</summary>
+            <summary>Obsolete. Returns the column width at the specified column index in the table.</summary>
             <param name="col"> Input zero-based column index</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetColumnWidth(System.Double)">
-            <summary>This function sets a uniform column width for all the columns in the table.</summary>
+            <summary>Sets a uniform column width for all the columns in the table.</summary>
             <param name="width"> Input uniform width to be used for all the columns in the table</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetColumnWidth(System.Int32,System.Double)">
-            <summary>This function sets the column width at the specified column index in the table.</summary>
+            <summary>Obsolete. Sets the column width at the specified column index in the table.</summary>
             <param name="col"> Input zero-based column index</param>
             <param name="width"> Input width to be used for the specified column</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.RowHeight(System.Int32)">
-            <summary>Returns the row height of the specified row in the table.</summary>
+            <summary>Obsolete. Returns the row height of the specified row in the table.</summary>
             <param name="row"> Input zero-based row index</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetRowHeight(System.Double)">
-            <summary>This function sets a uniform row height for all the rows in the table.</summary>
+            <summary>Sets a uniform row height for all the rows in the table.</summary>
             <param name="height"> Input height to be used for the specified row</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetRowHeight(System.Int32,System.Double)">
-            <summary>This function sets the row height for the specified row index in the table.</summary>
+            <summary>Obsolete. Sets the row height for the specified row index in the table.</summary>
             <param name="row"> Input zero-based row index</param>
             <param name="height"> Input height to be used for the specified row</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.MinimumColumnWidth(System.Int32)">
-            <summary>Returns the minimum column width at the specified column index in the table.</summary>
+            <summary>Obsolete. Returns the minimum column width at the specified column index in the table.</summary>
             <param name="col"> Input zero-based column index</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.MinimumRowHeight(System.Int32)">
-            <summary>Returns the minimum row height for the specified row in the table.</summary>
+            <summary>Obsolete. Returns the minimum row height for the specified row in the table.</summary>
             <param name="row"> Input zero-based row index</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.Alignment(System.Int32,System.Int32)">
-            <summary>This function returns the alignment of the text or block in the specified cell of the table.</summary>
+            <summary>Obsolete. Returns the alignment of the text or block in the specified cell of the table.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.IsBackgroundColorNone(System.Int32,System.Int32)">
-            <summary>Returns true if the background color for the specified cell in the table is set to no color value.</summary>
+            <summary>Obsolete. Returns true if the background color for the specified cell in the table is set to no color value.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetBackgroundColorNone(System.Int32,System.Int32,System.Boolean)">
-            <summary>This function enables or disables the background color for the specified cell.</summary>
+            <summary>Obsolete. Enables or disables the background color for the specified cell.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="value"> Input indicating whether to enable the background color for the specified cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetBackgroundColorNone(System.Boolean,System.Int32)">
-            <summary>This function enables or disables the background color for the specified row type. Different row types can be combined. 
-The possible row type values are DataRow, TitleRow, and HeaderRow. If no row type is specified, this function sets all the possible row types. 
-This method is deprecated and may be removed in a future release.</summary>
+            <summary>Obsolete. Enables or disables the background color for the specified row type.</summary>
             <param name="value"> Input indicating whether to enable the background color for the specified row type</param>
             <param name="rowTypes"> Input row types</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.BackgroundColor(System.Int32,System.Int32)">
-            <summary>This function returns the background color of the specified cell in the table.</summary>
+            <summary>Obsolete. Returns the background color of the specified cell in the table.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.ContentColor(System.Int32,System.Int32)">
-            <summary>This function returns the color of the cell content for the specified cell in the table.</summary>
+            <summary>Obsolete. Returns the color of the cell content for the specified cell in the table.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.TextStyle(System.Int32,System.Int32)">
-            <summary>Returns the object ID of the text style of the specified cell.</summary>
+            <summary>Obsolete. Returns the object ID of the text style of the specified cell.</summary>
             <param name="row"> Input the zero-based row index for the cell</param>
             <param name="col"> Input the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetTextStyle(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.ObjectId)">
-            <summary>This function sets the table object to use the TextStyleTableRecord specified by id for the specified cell.</summary>
+            <summary>Obsolete. Sets the table object to use the TextStyleTableRecord specified by id for the specified cell.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="id"> Input TextStyleTableRecord object ID</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetTextStyle(Autodesk.AutoCAD.DatabaseServices.ObjectId,System.Int32)">
-            <summary>This function sets the table object to use the TextStyleTableRecord specified by id for the specified row types.</summary>
+            <summary>Obsolete. Sets the table object to use the TextStyleTableRecord specified by id for the specified row types.</summary>
             <param name="id"> Input TextStyleTableRecord object ID</param>
             <param name="rowTypes"> Input row types for which to set the text style</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.TextHeight(System.Int32,System.Int32)">
-            <summary>Returns the text height of the specified table cell.</summary>
+            <summary>Obsolete. Returns the text height of the specified table cell.</summary>
             <param name="row"> Input the zero-based row index for the cell</param>
             <param name="col"> Input the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetTextHeight(System.Int32,System.Int32,System.Int32,System.Double)">
-            <summary>Sets the text height of the content at the specified content index.</summary>
+            <summary>Obsolete. Sets the text height of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
             <param name="height"> Input text height</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetTextHeight(System.Int32,System.Int32,System.Double)">
-            <summary>This function sets the text height for the specified table cell.</summary>
+            <summary>Obsolete. Sets the text height for the specified table cell.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="height"> Input text height</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetTextHeight(System.Double,System.Int32)">
-            <summary>This function sets the text height for the specified row types.</summary>
+            <summary>Obsolete. Sets the text height for the specified row types.</summary>
             <param name="height"> Input text height</param>
             <param name="rowTypes"> Input row types</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GridLineWeight(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.CellEdgeMasks)">
-            <summary>This function returns the grid lineweight of the specified edge of the cell.</summary>
+            <summary>Obsolete. Returns the grid lineweight of the specified edge of the cell.</summary>
             <param name="row"> Input row index. This can be -1.</param>
             <param name="col"> Input column index. This can be -1.</param>
             <param name="edge"> Input integer specifying the edge index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GridColor(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.CellEdgeMasks)">
-            <summary>This function returns the grid color of the specified edge of the cell.</summary>
+            <summary>Obsolete. Returns the grid color of the specified edge of the cell.</summary>
             <param name="row"> Input object specifying the zero-based row index for the cell</param>
             <param name="col"> Input object specifying the zero-based column index for the cell</param>
             <param name="edge"> Input object specifying the edge index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GridVisibility(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.CellEdgeMasks)">
-            <summary>This function returns the grid visibility of the specified edge of the cell.</summary>
+            <summary>Obsolete. Returns the grid visibility of the specified edge of the cell.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="edge"> Input specifying the edge index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetGridVisibility(System.Int32,System.Int32,System.Int16,System.Boolean)">
-            <summary>This function sets the grid visibility of the specified edge of the cell.</summary>
+            <summary>Obsolete. Sets the grid visibility of the specified edge of the cell.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="edges"> Input specifying the edge index for the cell</param>
             <param name="value"> Input visibility to be used for the grid at the specified edge of the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetGridVisibility(System.Boolean,System.Int32,System.Int32)">
-            <summary>This function sets the grid visibility for a given grid line type and row type of the table object. Different grid line and row types can be combined. 
-The possible values of the grid line type are HorzTop, HorzInside, HorzBottom, VertLeft, VertInside, and VertRight. 
-The possible values of the row type are DataRow, TitleRow, and HeaderRow. 
-This method is deprecated and may be removed in a future release.</summary>
+            <summary>Obsolete. Sets the grid visibility for a given grid line type and row type of the table object.</summary>
             <param name="visible"> Input visibility</param>
             <param name="borders"> Input grid line type for which to set the visibility</param>
             <param name="rows"> Input row type for which to set the visibility</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.TableStyleOverrides">
-            <summary>This function returns the table style overrides.</summary>
+            <summary>Obsolete. Returns the table style overrides.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.ClearTableStyleOverrides(System.Int32)">
-            <summary>Clears the overrides used in a table and its cells.</summary>
+            <summary>Obsolete. Clears the overrides used in a table and its cells.</summary>
             <param name="options"> Input System.Int32 object.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.CellType(System.Int32,System.Int32)">
@@ -10812,95 +10866,94 @@ This method is deprecated and may be removed in a future release.</summary>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetCellType(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.TableCellType)">
-            <summary>This function sets the cell type to be applied to the cell at the specified location in the table.</summary>
+            <summary>Obsolete. Sets the cell type to be applied to the cell at the specified location in the table.</summary>
             <param name="row"> Input the zero-based row index for the cell</param>
             <param name="col"> Input the zero-based column index for the cell</param>
             <param name="type"> Input enum value specifying the cell type</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetCellExtents(System.Int32,System.Int32,System.Boolean,Autodesk.AutoCAD.Geometry.Point3dCollection)">
-            <summary>Gets the cell extents for the specified cell.</summary>
+            <summary>Obsolete. Gets the cell extents for the specified cell.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
             <param name="isOuterCell"> Output System.Boolean object indicating whether the specified cell is an outer cell</param>
             <param name="pts"> Output Autodesk.AutoCAD.Geometry.Point3dCollection object; point collection containing the cell extents information</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.AttachmentPoint(System.Int32,System.Int32)">
-            <summary>Returns the attachment point of the specified cell.</summary>
+            <summary>Obsolete. Returns the attachment point of the specified cell.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.CellStyleOverrides(System.Int32,System.Int32)">
-            <summary>Returns the cell overrides for the specified cell.</summary>
+            <summary>Obsolete. Returns the cell overrides for the specified cell.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.DeleteCellContent(System.Int32,System.Int32)">
-            <summary>This function deletes the cell content for the specified cell.</summary>
+            <summary>Obsolete. Deletes the cell content for the specified cell.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.RowType(System.Int32)">
-            <summary>Returns the row type of the specified row in the table.</summary>
+            <summary>Obsolete. Returns the row type of the specified row in the table.</summary>
             <param name="row"> Input zero-based row index</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.TextStringConst(System.Int32,System.Int32)">
-            <summary>Returns a copy of the null-terminated text string in the specified cell.</summary>
+            <summary>Obsolete. Returns a copy of the null-terminated text string in the specified cell.</summary>
             <param name="row"> Input the zero-based row index for the cell</param>
             <param name="col"> Input the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.TextString(System.Int32,System.Int32)">
-            <summary>Returns a copy of the null-terminated text string in the specified cell.</summary>
+            <summary>Obsolete. Returns a copy of the null-terminated text string in the specified cell.</summary>
             <param name="row"> Input the zero-based row index for the cell</param>
             <param name="col"> Input the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetTextString(System.Int32,System.Int32,System.Int32,System.String)">
-            <summary>Sets the text for the first content at the specified content index.</summary>
+            <summary>Obsolete. Sets the text for the first content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents</param>
             <param name="text"> Input null-terminated text string</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetTextString(System.Int32,System.Int32,System.String)">
-            <summary>This function makes a copy of text and uses the copy as the value in the specified cell.</summary>
+            <summary>Obsolete. Sets the text as the value in the specified cell.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="value"> Input null-terminated text string</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.FieldId(System.Int32,System.Int32)">
-            <summary>Returns the object ID of the Field in the specified cell.</summary>
+            <summary>Obsolete. Returns the object ID of the Field in the specified cell.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetFieldId(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.ObjectId)">
-            <summary>This function sets the Field object ID for the specified cell.</summary>
+            <summary>Obsolete. Sets the Field object ID for the specified cell.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="col"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="fieldId"> Input field id to set</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.TextRotation(System.Int32,System.Int32)">
-            <summary>This function returns the rotation angle of the text in the specified cell.</summary>
+            <summary>Obsolete. Returns the rotation angle of the text in the specified cell.</summary>
             <param name="row"> Input the zero-based row index for the cell</param>
             <param name="col"> Input the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.IsAutoScale(System.Int32,System.Int32)">
-            <summary>This function returns the status of the mBlockAutoFit flag at the specified cell in the table.</summary>
+            <summary>Obsolete. Returns the status of the mBlockAutoFit flag at the specified cell in the table.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetAutoScale(System.Int32,System.Int32,System.Boolean)">
-            <summary>This function sets the auto fit flag, which determines whether to automatically fit the block into the specified cell. If autoFit is true, the Table object automatically computes the scale and insertion point for the block content in order to fit it into the specified cell. 
-This method is deprecated and may be removed in a future release.</summary>
+            <summary>Obsolete. Sets the auto fit flag, which determines whether to automatically fit the block into the specified cell.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="autoFit"> Input Boolean indicating whether to auto fit the block at the specified cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.BlockTableRecordId(System.Int32,System.Int32)">
-            <summary>Returns the object ID of the block table record at the specified cell in the table.</summary>
+            <summary>Obsolete. Returns the object ID of the block table record at the specified cell in the table.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetBlockTableRecordId(System.Int32,System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.ObjectId,System.Boolean)">
-            <summary>Sets the id of the block table record for the content at the specified content index.</summary>
+            <summary>Obsolete. Sets the id of the block table record for the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
@@ -10908,49 +10961,49 @@ This method is deprecated and may be removed in a future release.</summary>
             <param name="autoFit"> Input System.Boolean object indicating whether to auto fit the block into the specified cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetBlockTableRecordId(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.ObjectId,System.Boolean)">
-            <summary>This function sets the object ID of the block table record at the specified cell in the table.</summary>
+            <summary>Obsolete. Sets the object ID of the block table record at the specified cell in the table.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="blockId"> Input BlockTableRecord object ID</param>
             <param name="autoFit"> Input indicating whether to auto fit the block into the specified cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.BlockScale(System.Int32,System.Int32)">
-            <summary>This function returns the scale factor of the block reference at the specified cell in the table.</summary>
+            <summary>Obsolete. Returns the scale factor of the block reference at the specified cell in the table.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetBlockScale(System.Int32,System.Int32,System.Double)">
-            <summary>This function sets the scale factor of the block reference at the specified cell in the table.</summary>
+            <summary>Obsolete. Sets the scale factor of the block reference at the specified cell in the table.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="scale"> Input scale factor</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.BlockRotation(System.Int32,System.Int32)">
-            <summary>This function returns the rotation angle of the block reference at the specified cell in the table.</summary>
+            <summary>Obsolete. Returns the rotation angle of the block reference at the specified cell in the table.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetBlockRotation(System.Int32,System.Int32,System.Double)">
-            <summary>This function sets the rotation angle of the block reference at the specified cell in the table.</summary>
+            <summary>Obsolete. Sets the rotation angle of the block reference at the specified cell in the table.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="rotationalAngle"> Input rotation angle</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetBlockAttributeValue(System.Int32,System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.ObjectId)">
-            <summary>Gets the block attribute value if the content at the specified content index is a block with attributes.</summary>
+            <summary>Obsolete. Gets the block attribute value if the content at the specified content index is a block with attributes.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="column"> Input System.Int32 object specifying the zero-based column index for the cell</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
             <param name="attDefId"> Input Autodesk.AutoCAD.DatabaseServices.ObjectId object.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetBlockAttributeValue(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.ObjectId)">
-            <summary>This function gets the attribute value from the block cell using the specified object ID key.</summary>
+            <summary>Obsolete. Gets the attribute value from the block cell using the specified object ID key.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
             <param name="attributeDefinitionId"> Input Autodesk.AutoCAD.DatabaseServices.ObjectId object.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetBlockAttributeValue(System.Int32,System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.ObjectId,System.String)">
-            <summary>Sets the block attribute value if the content at the specified content index is a block with attributes.</summary>
+            <summary>Obsolete. Sets the block attribute value if the content at the specified content index is a block with attributes.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents</param>
@@ -10958,7 +11011,7 @@ This method is deprecated and may be removed in a future release.</summary>
             <param name="value"> Input character string specifying attribute value</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetBlockAttributeValue(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.ObjectId,System.String)">
-            <summary>Sets the block attribute value if the content at the specified content index is a block with attributes.</summary>
+            <summary>Obsolete. Sets the block attribute value if the content at the specified content index is a block with attributes.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="attributeDefinitionId"> Input the object ID of an of AttributeDefinition object</param>
@@ -10971,7 +11024,7 @@ This method is deprecated and may be removed in a future release.</summary>
             <param name="columns"> Input number of columns to insert</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.DeleteColumns(System.Int32,System.Int32)">
-            <summary>This function deletes the specified number of columns from the table at the column index col.</summary>
+            <summary>Deletes the specified number of columns from the table at the column index col.</summary>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
             <param name="columns"> Input System.Int32 object number of columns to delete</param>
         </member>
@@ -10982,7 +11035,7 @@ This method is deprecated and may be removed in a future release.</summary>
             <param name="rows"> Input number of rows to insert</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.DeleteRows(System.Int32,System.Int32)">
-            <summary>This function deletes the specified number of rows from the table at the row index row.</summary>
+            <summary>Deletes the specified number of rows from the table at the row index row.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="rows"> Input System.Int32 object number of rows to delete</param>
         </member>
@@ -10995,7 +11048,7 @@ This method is deprecated and may be removed in a future release.</summary>
             <param name="range"> Input the cell range</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.IsMergedCell(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.CellRange&)">
-            <summary>This function returns true if the specified cell is within merged cells.</summary>
+            <summary>Obsolete. Returns true if the specified cell is within merged cells.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="range"> Output the range of merged cells</param>
@@ -11017,58 +11070,58 @@ If forceUpdate is true, then the block table record will be updated regardless o
             <summary>Removes the subselection set of cells from the table.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.DataType(System.Int32,System.Int32)">
-            <summary>Returns the data type and unit type of the first content.</summary>
+            <summary>Obsolete. Returns the data type and unit type of the first content.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="col"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.UnitType(System.Int32,System.Int32)">
-            <summary>Returns the object ID of the unit type of the specified cell.</summary>
+            <summary>Obsolete. Returns the object ID of the unit type of the specified cell.</summary>
             <param name="row"> Input the zero-based row index for the cell</param>
             <param name="col"> Input the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetDataType(System.Int32,System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.DataTypeParameter)">
-            <summary>Sets the data type of the content at the specified content index.</summary>
+            <summary>Obsolete. Sets the data type of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
             <param name="dataType"> Input data type to set</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.Format(System.Int32,System.Int32)">
-            <summary>Returns the cell format based on the zero-based row and column index.</summary>
+            <summary>Obsolete. Returns the cell format based on the zero-based row and column index.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetFormat(System.Int32,System.Int32,System.String)">
-            <summary>For internal use.</summary>
+            <summary>Obsolete. For internal use.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="col"> Input System.Int32 object specifying the zero-based column index for the cell</param>
             <param name="pFormat"> Input format string to set</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetFormat(System.String,System.Int32)">
-            <summary>For internal use.</summary>
+            <summary>Obsolete. For internal use.</summary>
             <param name="pFormat"> Input System.String object.</param>
             <param name="rowTypes"> Input System.Int32 object.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.Value(System.Int32,System.Int32)">
-            <summary>Returns the content type of the content.</summary>
+            <summary>Obsolete. Returns the content type of the content.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="col"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetValue(System.Int32,System.Int32,System.Int32,System.Object)">
-            <summary>Sets the value of the first content.</summary>
+            <summary>Obsolete. Sets the value of the first content.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
             <param name="value"> Input value to be set</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetValue(System.Int32,System.Int32,System.Object)">
-            <summary>Sets the value of the first content of a cell.</summary>
+            <summary>Obsolete. Sets the value of the first content of a cell.</summary>
             <param name="row"> Input specifying the zero-based row index for the cell</param>
             <param name="col"> Input specifying the zero-based column index for the cell</param>
             <param name="pValue"> Input value to set</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.ResetValue(System.Int32,System.Int32)">
-            <summary>Resets the value in a particular cell.</summary>
+            <summary>Obsolete. Resets the value in a particular cell.</summary>
             <param name="row"> Input object specifying the zero-based row index for the cell</param>
             <param name="col"> Input object specifying the zero-based column index for the cell</param>
         </member>
@@ -11091,11 +11144,11 @@ If forceUpdate is true, then the block table record will be updated regardless o
             <param name="numCols"> Input number of columns</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.CanInsertRow(System.Int32)">
-            <summary>Checks if new rows can be inserted at the specified index.</summary>
+            <summary>Checks whether new rows can be inserted at the specified index.</summary>
             <param name="index"> Input System.Int32 object to check if new row can be inserted.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.CanInsertColumn(System.Int32)">
-            <summary>Checks if new columns can be inserted at the specified index.</summary>
+            <summary>Obsolete. Checks whether new columns can be inserted at the specified index.</summary>
             <param name="index"> Input System.Int32 object to check if new column can be inserted.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.InsertRowsAndInherit(System.Int32,System.Int32,System.Int32)">
@@ -11111,352 +11164,350 @@ If forceUpdate is true, then the block table record will be updated regardless o
             <param name="numCols"> Input number of columns to insert</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.CanDeleteRows(System.Int32,System.Int32)">
-            <summary>Checks if the row can be deleted from the specified index.</summary>
+            <summary>Obsolete. Checks whether the row can be deleted from the specified index.</summary>
             <param name="index"> Input System.Int32 object to check if a row can be deleted.</param>
             <param name="nCount"> Input number of rows to delete</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.CanDeleteColumns(System.Int32,System.Int32)">
-            <summary>Checks if the column can be deleted from the specified index.</summary>
+            <summary>Obsolete. Checks whether the column can be deleted from the specified index.</summary>
             <param name="index"> Input System.Int32 object to check if a column can be deleted.</param>
             <param name="nCount"> Input number of columns to delete</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetEnumerator(Autodesk.AutoCAD.DatabaseServices.CellRange,Autodesk.AutoCAD.DatabaseServices.TableEnumeratorOption)">
-            <summary>Returns the enumerator object within the specified range based on the table enumeration option.</summary>
+            <summary>Obsolete. Returns the enumerator object within the specified range based on the table enumeration option.</summary>
             <param name="range"> Input range of cells to delete the contents</param>
             <param name="option"> Input enumerator option</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetEnumerator">
-            <summary>Returns the enumerator object.</summary>
+            <summary>Obsolete. Returns the enumerator object.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.IsEmpty(System.Int32,System.Int32)">
-            <summary>Checks if the content of the specified cell is empty 
+            <summary>Obsolete. Checks whether the content of the specified cell is empty 
 Returns true if the cell is empty, false if not.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetMergeRange(System.Int32,System.Int32)">
-            <summary>Returns merge range.</summary>
+            <summary>Obsolete. Returns merge range.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.IsContentEditable(System.Int32,System.Int32)">
-            <summary>This function checks the cell state to determine if a cell content can be modified.</summary>
+            <summary>Obsolete. This function checks the cell state to determine if a cell content can be modified.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.IsFormatEditable(System.Int32,System.Int32)">
-            <summary>This function checks the cell state to determine if a cell format can be modified.</summary>
+            <summary>Obsolete. This function checks the cell state to determine if a cell format can be modified.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetCellState(System.Int32,System.Int32)">
-            <summary>Returns the cell state.</summary>
+            <summary>Obsolete. Returns the cell state.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetCellState(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.CellStates)">
-            <summary>Sets the cell state.</summary>
+            <summary>Obsolete. Sets the cell state.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="cellState"> Input cell state to set. This will replace all the bits of the current state</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.CreateContent(System.Int32,System.Int32,System.Int32)">
-            <summary>This function is called to create additional contents for a cell; one is created by default.</summary>
+            <summary>Obsolete. This function is called to create additional contents for a cell; one is created by default.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetNumberOfContents(System.Int32,System.Int32)">
-            <summary>Returns the number of contents in the specified cell.</summary>
+            <summary>Obsolete. Returns the number of contents in the specified cell.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.MoveContent(System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>Moves a content in a cell from one position to another position within the cell.</summary>
+            <summary>Obsolete. Moves a content in a cell from one position to another position within the cell Note: This method is deprecated and may be removed in a future release..</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="fromIndex"> Input index of the content to move</param>
             <param name="toIndex"> Input get index to which the content should be moved</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.DeleteContent(Autodesk.AutoCAD.DatabaseServices.CellRange)">
-            <summary>Deletes all the contents in a range of cells.</summary>
+            <summary>Obsolete. Deletes all the contents in a range of cells.</summary>
             <param name="range"> Input range of cells to delete the contents</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.DeleteContent(System.Int32,System.Int32,System.Int32)">
-            <summary>Deletes content from a cell from the specified index.</summary>
+            <summary>Obsolete. Deletes content from a cell from the specified index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of row.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.DeleteContent(System.Int32,System.Int32)">
-            <summary>Deletes all the contents in a cell.</summary>
+            <summary>Obsolete. Deletes all the contents in a cell.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetContentTypes(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the content type of the content at the specified content index.</summary>
+            <summary>Obsolete. Returns the content type of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetContentTypes(System.Int32,System.Int32)">
-            <summary>Returns the content type of the first content.</summary>
+            <summary>Obsolete. Returns the content type of the first content.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetValue(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the value of the first content based on the specified contentIndex.</summary>
+            <summary>Obsolete. Returns the value of the first content based on the specified contentIndex.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetDataFormat(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the data format of the content at the specified content index.</summary>
+            <summary>Obsolete. Returns the data format of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetDataFormat(System.Int32,System.Int32)">
-            <summary>Returns the data format of the first content.</summary>
+            <summary>Obsolete. Returns the data format of the first content.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetDataFormat(System.Int32,System.Int32,System.Int32,System.String)">
-            <summary>Sets the data format of the first content.</summary>
+            <summary>Obsolete. Sets the data format of the first content.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
             <param name="format"> Input data format to set</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetDataFormat(System.Int32,System.Int32,System.String)">
-            <summary>Sets the data format of the first content.</summary>
+            <summary>Obsolete. Sets the data format of the first content.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns</param>
             <param name="format"> Input data format to set</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetTextString(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the text for the first content at the specified content index.</summary>
+            <summary>Obsolete. Returns the text for the first content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.HasFormula(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns true if the content at the specified index is a formula.</summary>
+            <summary>Obsolete. Returns true if the content at the specified index is a formula.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetFormula(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the formula if the content at the specified content index has a formula, otherwise returns empty string.</summary>
+            <summary>Obsolete. Returns the formula if the content at the specified content index has a formula, otherwise returns empty string.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetFormula(System.Int32,System.Int32,System.Int32,System.String)">
-            <summary>Sets the formula at the specified content index.</summary>
+            <summary>Obsolete. Sets the formula at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
             <param name="formula"> Input formula to set.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetFieldId(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the id of the field at the specified index.</summary>
+            <summary>Obsolete. Returns the id of the field at the specified index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetBlockTableRecordId(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the id of the block table record for the content at the specified content index.</summary>
+            <summary>Obsolete. Returns the id of the block table record for the content at the specified content index.</summary>
             <param name="row"> Input System.Int32 object specifying the zero-based row index for the cell</param>
             <param name="column"> Input System.Int32 object specifying the zero-based column index for the cell</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetCustomData(System.Int32,System.Int32,System.String)">
-            <summary>Gets the custom data value set in cell, row, or column as key-value pairs.</summary>
+            <summary>Obsolete. Gets the custom data value set in cell, row, or column as key-value pairs.</summary>
             <param name="row"> Input row index. This can be -1.</param>
             <param name="column"> Input column index. This can be -1.</param>
             <param name="key"> Input key to store the custom data</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetCustomData(System.Int32,System.Int32)">
-            <summary>Returns the custom data value set in cell, row, or column.</summary>
+            <summary>Obsolete. Returns the custom data value set in cell, row, or column.</summary>
             <param name="row"> Input row index. This can be -1.</param>
             <param name="column"> Input column index. This can be -1.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetCustomData(System.Int32,System.Int32,System.String,System.Object)">
-            <summary>Sets the custom data value set in cell, row, or column.</summary>
+            <summary>Obsolete. Sets the custom data value set in cell, row, or column.</summary>
             <param name="row"> Input row index. This can be -1.</param>
             <param name="column"> Input column index. This can be -1.</param>
             <param name="key"> Input key to use for the custom data</param>
             <param name="value"> Input custom data to set. If this is NULL, it deletes the custom data.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetCustomData(System.Int32,System.Int32,System.Int32)">
-            <summary>Sets the custom data value set in cell, row, or column.</summary>
+            <summary>Obsolete. Sets the custom data value set in cell, row, or column.</summary>
             <param name="row"> Input row index. This can be -1.</param>
             <param name="column"> Input column index. This can be -1.</param>
             <param name="data"> Input custom data to set. If this is NULL, it deletes the custom data.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetCellStyle(System.Int32,System.Int32)">
-            <summary>Returns the the cell style of a cell, row, or column.</summary>
+            <summary>Obsolete. Returns the the cell style of a cell, row, or column.</summary>
             <param name="row"> Input row index. This can be -1.</param>
             <param name="column"> Input column index. This can be -1.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetCellStyle(System.Int32,System.Int32,System.String)">
-            <summary>Sets the the cell style of a cell, row, or column.</summary>
+            <summary>Obsolete. Sets the the cell style of a cell, row, or column.</summary>
             <param name="row"> Input row index. This can be -1.</param>
             <param name="column"> Input column index. This can be -1.</param>
             <param name="styleName"> Input cell style to set. The cell style should exist in the table style set in this table.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetMargin(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.CellMargins)">
-            <summary>Returns the margin of cell, row, or column.</summary>
+            <summary>Obsolete. Returns the margin of cell, row, or column.</summary>
             <param name="row"> Input row index. Pass the value -1 if you are only concerned with the column.</param>
             <param name="column"> Input row index. Pass the value -1 if you are only concerned with the row.</param>
             <param name="margin"> Input margin type to get</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetMargin(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.CellMargins,System.Double)">
-            <summary>Sets the margin of cell, row, or column.</summary>
+            <summary>Obsolete. Sets the margin of cell, row, or column.</summary>
             <param name="row"> Input row index. This can be -1.</param>
             <param name="column"> Input column index. This can be -1.</param>
             <param name="margin"> Input margin type to set. Multiple margin types can be combined using OR</param>
             <param name="value"> Input margin value to set</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetContentColor(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the color of the content at the specified content index.</summary>
+            <summary>Obsolete. Returns the color of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetDataType(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the data type and unit type of the content at the specified content index.</summary>
+            <summary>Obsolete. Returns the data type and unit type of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetTextStyleId(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the text style of the content at the specified content index.</summary>
+            <summary>Obsolete. Returns the text style of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetTextStyleId(System.Int32,System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.ObjectId)">
-            <summary>Sets the text style of the content at the specified content index.</summary>
+            <summary>Obsolete. Sets the text style of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
             <param name="id"> Input text style</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetTextHeight(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the text height of the content at the specified content index.</summary>
+            <summary>Obsolete. Returns the text height of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetRotation(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the rotation angle of the content at the specified content index.</summary>
+            <summary>Obsolete. Returns the rotation angle of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetRotation(System.Int32,System.Int32,System.Int32,System.Double)">
-            <summary>Sets the rotation angle of the content at the specified content index.</summary>
+            <summary>Obsolete. Sets the rotation angle of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
             <param name="angle"> Input angle in radians</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetIsAutoScale(System.Int32,System.Int32,System.Int32)">
-            <summary>This function returns the status of the mBlockAutoFit flag at the specified cell in the table.</summary>
+            <summary>Obsolete. Returns the status of the mBlockAutoFit flag at the specified cell in the table.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetIsAutoScale(System.Int32,System.Int32,System.Int32,System.Boolean)">
-            <summary>This function returns the status of the autoFit flag at the specified cell in the table. If this flag is true, the Table object automatically computes the scale and insertion point for the block content in order to fit it into the specified cell.</summary>
+            <summary>Obsolete. Sets the status of the autoFit flag at the specified cell in the table.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
             <param name="autoFit"> Input status of autofit flag</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetScale(System.Int32,System.Int32,System.Int32)">
-            <summary>Returns the scale of the content at the specified content index.</summary>
+            <summary>Obsolete. Returns the scale of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetScale(System.Int32,System.Int32,System.Int32,System.Double)">
-            <summary>Sets the scale of the content at the specified content index.</summary>
+            <summary>Obsolete. Sets the scale of the content at the specified content index.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="contentIndex"> Input content index. It should be more than or equal to 0 and less than the number of contents.</param>
             <param name="scale"> Input angle in radians</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetContentLayout(System.Int32,System.Int32)">
-            <summary>Returns the content layout of the first content.</summary>
+            <summary>Obsolete. Returns the content layout of the first content.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetMergeAllEnabled(System.Int32,System.Int32)">
-            <summary>Returns true if the merge-all flag is enabled in a row or column, else false.</summary>
+            <summary>Obsolete. Returns true if the merge-all flag is enabled in a row or column, else false.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetMergeAllEnabled(System.Int32,System.Int32,System.Boolean)">
-            <summary>Enables the merge-all flag in a row or column.</summary>
+            <summary>Obsolete. Enables the merge-all flag in a row or column.</summary>
             <param name="row"> Input zero-based row index</param>
             <param name="column"> Input zero-based column index</param>
             <param name="enable"> Input status of merge all for the cell</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetOverrides(System.Int32,System.Int32,System.Int32)">
-            <summary>Overloads for the Table.GetOverrides method.</summary>
+            <summary>Obsolete. Returns the override of cell, row, column, or content.</summary>
             <param name="row"> Input row index. This can be -1.</param>
             <param name="column"> Input column index. This can be -1.</param>
             <param name="contentIndex"> Input content index.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetOverrides(System.Int32,System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.CellProperties)">
-            <summary>Sets the override in cell, row, column, or content.</summary>
+            <summary>Obsolete. Sets the override in cell, row, column, or content.</summary>
             <param name="row"> Input row index. This can be -1.</param>
             <param name="column"> Input column index. This can be -1.</param>
             <param name="contentIndex"> Input content index. This can be -1.</param>
             <param name="override"> Input override to set</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.RemoveAllOverrides(System.Int32,System.Int32)">
-            <summary>Removes all the overrides in cell, row, or column.</summary>
+            <summary>Obsolete. Removes all the overrides in cell, row, or column.</summary>
             <param name="row"> Input row index. Insert the value -1 if you are only concerned with a column.</param>
             <param name="column"> Input column index. Insert the value -1 if you are only concerned with a row.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.IsLinked(System.Int32,System.Int32)">
-            <summary>Checks if a cell is linked to a data source.</summary>
+            <summary>Obsolete. Checks whether a cell is linked to a data source.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetDataLink(Autodesk.AutoCAD.DatabaseServices.CellRange)">
-            <summary>Gets the data links set in the specified range.</summary>
+            <summary>Obsolete. Gets the data links set in the specified range.</summary>
             <param name="range"> Input range to get the data links. If this is NULL it gets all the data links in the table.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetDataLink">
             <summary>Gets the data link if the cell is linked to a data source using data link.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetDataLink(System.Int32,System.Int32)">
-            <summary>Returns the id of the data link if the specified cell is linked to a data source using a data link.</summary>
+            <summary>Obsolete. Returns the id of the data link if the specified cell is linked to a data source using a data link.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetDataLink(Autodesk.AutoCAD.DatabaseServices.CellRange,Autodesk.AutoCAD.DatabaseServices.ObjectId,System.Boolean)">
-            <summary>Sets the specified data link in a cell. 
-If the specified cell is top-left cell of an existing linked range this will overwrite the current data link. If it is any other cell in a linked range the function will fail. This function does not automatically update the data; call updateDataLink() to update the data.</summary>
+            <summary>Obsolete. Sets the specified data link in a cell.</summary>
             <param name="range"> Input range to get the data links. If this is NULL it gets all the data links in the table.</param>
             <param name="dataLinkId"> Output reference to an array to receive the data link IDs.</param>
             <param name="bUpdate"> Input true if the data link is to be updated after setting it, false if not.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.SetDataLink(System.Int32,System.Int32,Autodesk.AutoCAD.DatabaseServices.ObjectId,System.Boolean)">
-            <summary>Sets the specified data link in a cell. 
-If the specified cell is top-left cell of an existing linked range this will overwrite the current data link. If it is any other cell in a linked range the function will fail. This function does not automatically update the data; call updateDataLink() to update the data.</summary>
+            <summary>Obsolete. Sets the specified data link in a cell.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
             <param name="dataLinkId"> Input the data link object</param>
             <param name="bUpdate"> Input true if the data link is to be updated after setting it, false if not.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.GetDataLinkRange(System.Int32,System.Int32)">
-            <summary>Returns the data link range if the specified cell is part of a linked range.</summary>
+            <summary>Obsolete. Returns the data link range if the specified cell is part of a linked range.</summary>
             <param name="row"> Input row index. It should be more than or equal to 0 and less than the number of rows.</param>
             <param name="column"> Input column index. It should be more than or equal to 0 and less than the number of columns.</param>
         </member>
@@ -11464,7 +11515,7 @@ If the specified cell is top-left cell of an existing linked range this will ove
             <summary>Removes all the data links in the table.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Table.RemoveDataLink(System.Int32,System.Int32)">
-            <summary>Removes the data link in the specified cell.</summary>
+            <summary>Obsolete. Removes the data link in the specified cell.</summary>
             <param name="row"> Input row index. Insert the value -1 if you are only concerned with a column.</param>
             <param name="column"> Input column index. Insert the value -1 if you are only concerned with a row.</param>
         </member>
@@ -11518,6 +11569,15 @@ If the specified cell is top-left cell of an existing linked range this will ove
             <param name="sourceRange"> Input Autodesk.AutoCAD.DatabaseServices.CellRange object. Source range to copy or use as pattern. This can be set to invalid range if the fill range is to be cleared.</param>
             <param name="options"> Input table copy options</param>
         </member>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.Columns">
+            <summary>Returns a collection of the columns in the table.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.Rows">
+            <summary>Returns a collection of the rows in the table.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.Cells">
+            <summary>Returns the cells of the table.</summary>
+        </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.TableStyle">
             <summary>Returns the object ID of the TableStyle referenced by the table object.</summary>
         </member>
@@ -11525,46 +11585,46 @@ If the specified cell is top-left cell of an existing linked range this will ove
             <summary>Returns the unit horizontal direction vector for the table in WCS coordinates.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.NumRows">
-            <summary>Returns a non-negative integer representing the number of rows in the table.</summary>
+            <summary>Obsolete Returns a non-negative integer representing the number of rows in the table.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.NumColumns">
-            <summary>Returns a non-negative integer representing the number of columns in the table.</summary>
+            <summary>Obsolete Returns a non-negative integer representing the number of columns in the table.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.Width">
-            <summary>Returns the total width for the  table.</summary>
+            <summary>Returns the total width for the table.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.Height">
             <summary>Returns the total height of the table.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.MinimumTableWidth">
-            <summary>Returns the minimum total width for  the table.</summary>
+            <summary>Returns the minimum total width for the table.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.MinimumTableHeight">
-            <summary>Returns the minimum total height for  the table.</summary>
+            <summary>Returns the minimum total height for the table.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.HorizontalCellMargin">
-            <summary>Returns the horizontal cell margin for the table.</summary>
+            <summary>Obsolete Returns the horizontal cell margin for the table.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.VerticalCellMargin">
-            <summary>Returns the vertical cell margin for the table.</summary>
+            <summary>Obsolete Returns the vertical cell margin for the table.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.FlowDirection">
             <summary>Returns the direction that the table follows from its start to its finish.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.IsTitleSuppressed">
-            <summary>Returns true if the title row of the table is suppressed, or false if it is not.</summary>
+            <summary>Obsolete Returns true if the title row of the table is suppressed, or false if it is not.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.TableStyleName">
             <summary>Returns the name of the table style.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.IsHeaderSuppressed">
-            <summary>Returns true if the header row of the table is suppressed, or false if it is not.</summary>
+            <summary>Obsolete Returns true if the header row of the table is suppressed, or false if it is not.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.SubSelection">
             <summary>Returns range of cells in the subselection set.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.HasSubSelection">
-            <summary>Returns true if the table has a  subselection set.</summary>
+            <summary>Returns true if the table has a subselection set.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.Table.BreakEnabled">
             <summary>Returns true if break feature is enabled in the cell.</summary>
@@ -12417,7 +12477,8 @@ If the specified cell is top-left cell of an existing linked range this will ove
             <param name="data"> 32-bit data value associated with id</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Filters.IndexUpdateData.GetIdData(Autodesk.AutoCAD.DatabaseServices.ObjectId)">
-            <summary>Obsolete - Use the GetIdDataPtr property instead.</summary>
+            <summary>Obsolete - Use the GetIdDataPtr property instead. 
+Returns the 32-bit data associated with id..</summary>
             <param name="id"> Object ID that data is associated with</param>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Filters.IndexUpdateData.GetIdDataPtr(Autodesk.AutoCAD.DatabaseServices.ObjectId)">
@@ -15488,6 +15549,9 @@ Returns the collection of points (in WCS) defining bounding box of text as displ
         <member name="T:Autodesk.AutoCAD.DatabaseServices.Surface">
             <summary>This .Net class wraps the ObjectARX class AcDbSurface.</summary>
         </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.Surface.CreateInterferenceObjects(Autodesk.AutoCAD.DatabaseServices.Entity,System.Int32)">
+            <summary>This .NET method wraps the ObjectARX method AcDbSurface::createInterferenceObjects().</summary>
+        </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Surface.ImprintEntity(Autodesk.AutoCAD.DatabaseServices.Entity)">
             <summary>Overloads for the Surface.ImprintEntity method.</summary>
         </member>
@@ -15522,7 +15586,7 @@ Returns the collection of points (in WCS) defining bounding box of text as displ
             <summary>This .NET method wraps the ObjectARX method AcDbSurface::setSubentMaterialMapper Method.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Surface.GetSubentityMaterialMapper(Autodesk.AutoCAD.DatabaseServices.SubentityId)">
-            <summary>This .NET method wraps the ObjectARX method AcDbSurface::getSubentMaterialMapper Method.</summary>
+            <summary>This .NET method wraps the ObjectARX method AcDbSurface::getSubentMaterialMapper.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Surface.ProjectOnToSurface(Autodesk.AutoCAD.DatabaseServices.Entity,Autodesk.AutoCAD.Geometry.Vector3d)">
             <summary>This wraps the ObjectARX AcDbSurface::projectOnToSurface() method.</summary>
@@ -15541,9 +15605,6 @@ Returns the collection of points (in WCS) defining bounding box of text as displ
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Surface.CreateRevolvedSurface(Autodesk.AutoCAD.DatabaseServices.Profile3d,Autodesk.AutoCAD.DatabaseServices.Profile3d,System.Boolean,System.Double,System.Double,Autodesk.AutoCAD.DatabaseServices.RevolveOptions)">
             <summary>This wraps the ObjectARX AcDbSurface::createRevolvedSurface() method.</summary>
-        </member>
-        <member name="M:Autodesk.AutoCAD.DatabaseServices.Surface.CreateRevolvedSurface(Autodesk.AutoCAD.DatabaseServices.Profile3d,Autodesk.AutoCAD.DatabaseServices.Profile3d,System.Boolean,System.Double,System.Double,Autodesk.AutoCAD.DatabaseServices.RevolveOptions,System.Boolean)">
-            <summary>This wraps the ObjectARX AcDbSurface::createRevolvedSurface( ) method.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.Surface.CreateRevolvedSurface(Autodesk.AutoCAD.DatabaseServices.Profile3d,Autodesk.AutoCAD.Geometry.Point3d,Autodesk.AutoCAD.Geometry.Vector3d,System.Double,System.Double,Autodesk.AutoCAD.DatabaseServices.RevolveOptions)">
             <summary>This wraps the ObjectARX AcDbSurface::createRevolvedSurface() method.</summary>
@@ -21562,6 +21623,32 @@ If add == true, the object pointed to by obj is added to the top transaction. If
         <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.#ctor">
             <summary>Default constructor.</summary>
         </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.HasContent">
+            <summary>Returns true if MLeader has content; otherwise, returns false.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.recomputeBreakPoints">
+            <summary>Recalculates the dim break point.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.PostMLeaderToDb(Autodesk.AutoCAD.DatabaseServices.Database)">
+            <summary>Adds current MLeader object to the modal space of input database.</summary>
+            <param name="db"> Input database into which the current MLeader object should be added.</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.ConnectionPoint(Autodesk.AutoCAD.Geometry.Vector3d)">
+            <summary>Gets the leader connection point of the specific direction.</summary>
+            <param name="direction"> Input the specific direction.</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.GetBlockAttribute(Autodesk.AutoCAD.DatabaseServices.ObjectId)">
+            <summary>Gets attribute in block content determined by attribute definition id.</summary>
+            <param name="attDefId"> Input attribute definition id.</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.SetBlockAttribute(Autodesk.AutoCAD.DatabaseServices.ObjectId,Autodesk.AutoCAD.DatabaseServices.AttributeReference)">
+            <summary>Set attribute in block content with attribute definition id.</summary>
+            <param name="attDefId"> Input attribute definition id.</param>
+            <param name="attributeValue"> Input attribute value.</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.GetLeaderIndexes">
+            <summary>Gets the indexes of leaders.</summary>
+        </member>
         <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.GetPlane">
             <summary>Return the WCS plane which the MLeader resides on.</summary>
         </member>
@@ -21684,31 +21771,23 @@ If add == true, the object pointed to by obj is added to the top transaction. If
         <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.getContextDataManager">
             <summary>Returns the context data manager in MLeader.</summary>
         </member>
-        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.HasContent">
-            <summary>Returns true if MLeader has content; otherwise, returns false.</summary>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.BlockPosition">
+            <summary>Accesses the position of MLeader block content.</summary>
         </member>
-        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.recomputeBreakPoints">
-            <summary>Recalculates the dim break point.</summary>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.TextLocation">
+            <summary>Accesses the location of MLeader MText content.</summary>
         </member>
-        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.PostMLeaderToDb(Autodesk.AutoCAD.DatabaseServices.Database)">
-            <summary>Adds current MLeader object to the modal space of input database.</summary>
-            <param name="db"> Input database into which the current MLeader object should be added.</param>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.ToleranceLocation">
+            <summary>Accesses the location of MLeader tolerance content.</summary>
         </member>
-        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.ConnectionPoint(Autodesk.AutoCAD.Geometry.Vector3d)">
-            <summary>Gets the leader connection point of the specific direction.</summary>
-            <param name="direction"> Input the specific direction.</param>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.MText">
+            <summary>Accesses the cloned MText.</summary>
         </member>
-        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.GetBlockAttribute(Autodesk.AutoCAD.DatabaseServices.ObjectId)">
-            <summary>Gets attribute in block content determined by attribute definition id.</summary>
-            <param name="attDefId"> Input attribute definition id.</param>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.TextAttachmentDirection">
+            <summary>Accesses the value of the text attachment Direction of MText content.</summary>
         </member>
-        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.SetBlockAttribute(Autodesk.AutoCAD.DatabaseServices.ObjectId,Autodesk.AutoCAD.DatabaseServices.AttributeReference)">
-            <summary>Set attribute in block content with attribute definition id.</summary>
-            <param name="attDefId"> Input attribute definition id.</param>
-            <param name="attributeValue"> Input attribute value.</param>
-        </member>
-        <member name="M:Autodesk.AutoCAD.DatabaseServices.MLeader.GetLeaderIndexes">
-            <summary>Gets the indexes of leaders.</summary>
+        <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.ExtendLeaderToText">
+            <summary>Gets and Sets the value indicating whether horizontal leader lines are automatically extended to text.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.Normal">
             <summary>Accesses the unit normal vector (in WCS coordinates) of the plane that contains the leader.</summary>
@@ -21796,24 +21875,6 @@ If add == true, the object pointed to by obj is added to the top transaction. If
         </member>
         <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.MLeaderStyle">
             <summary>Accesses the object ID of current MLeader style.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.BlockPosition">
-            <summary>Accesses the position of MLeader block content.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.TextLocation">
-            <summary>Accesses the location of MLeader MText content.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.ToleranceLocation">
-            <summary>Accesses the location of MLeader tolerance content.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.MText">
-            <summary>Accesses the cloned MText.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.TextAttachmentDirection">
-            <summary>Accesses the value of the text attachment Direction of MText content.</summary>
-        </member>
-        <member name="P:Autodesk.AutoCAD.DatabaseServices.MLeader.ExtendLeaderToText">
-            <summary>Gets and Sets the value indicating whether horizontal leader lines are automatically extended to text.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.DatabaseServices.MoveType">
             <summary>This .NET class wraps the AcDbMLeader::MoveType ObjectARX enum.</summary>
@@ -22772,9 +22833,6 @@ AcDbSubDMesh::convertToSurface(bool bConvertAsSmooth, const AcDbSubentId& id, Ac
             <summary>Constructs a 3d polynomial spline interpolating a given array if 3d points within given tolerance.</summary>
             <param name="fitPoints"> Input points interpolating the spline curve</param>
             <param name="fitTolerance"> Input maximal deviation of the curve from the fitPoints</param>
-        </member>
-        <member name="M:Autodesk.AutoCAD.Geometry.NurbCurve3d.#ctor(Autodesk.AutoCAD.Geometry.Point3dCollection,Autodesk.AutoCAD.Geometry.Vector3d,Autodesk.AutoCAD.Geometry.Vector3d,System.Boolean,System.Boolean,Autodesk.AutoCAD.Geometry.KnotParameterizationEnum)">
-            <summary>This wraps the AcGeNurbCurve3d::AcGeNurbCurve3d (const AcGePoint3dArray&amp; fitPoints, const AcGeVector3d&amp; startTangent, const AcGeVector3d&amp; endTangent, Adesk::Boolean startTangentDefined = Adesk::kTrue, Adesk::Boolean endTangentDefined = Adesk::kTrue, AcGe::KnotParameterization knotParam = kChord, const AcGeTol&amp; fitTolerance = AcGeContext::gTol) method.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.Geometry.NurbCurve3d.#ctor(System.Int32,Autodesk.AutoCAD.Geometry.KnotCollection,Autodesk.AutoCAD.Geometry.Point3dCollection,Autodesk.AutoCAD.Geometry.DoubleCollection,System.Boolean)">
             <summary>Constructs a 3D rational spline by a knot vector, control points, and weights.</summary>
@@ -24823,9 +24881,6 @@ If the updateReferencingExpressions argument is true, it also finds all expressi
         <member name="M:Autodesk.AutoCAD.DatabaseServices.AssocLoftedSurfaceActionBody.#ctor">
             <summary>This wraps the ObjectARX AcDbAssocLoftedSurfaceActionBody::AcDbAssocLoftedSurfaceActionBody() method.</summary>
         </member>
-        <member name="M:Autodesk.AutoCAD.DatabaseServices.AssocLoftedSurfaceActionBody.CreateInstance(Autodesk.AutoCAD.DatabaseServices.ObjectId,Autodesk.AutoCAD.DatabaseServices.SubentRef[],Autodesk.AutoCAD.DatabaseServices.PathRef[],Autodesk.AutoCAD.DatabaseServices.PathRef,Autodesk.AutoCAD.DatabaseServices.LoftOptions,System.Int32[],System.Double[],System.Boolean)">
-            <summary>This wraps the ObjectARX AcDbAssocLoftedSurfaceActionBody::createInstance() method.</summary>
-        </member>
         <member name="T:Autodesk.AutoCAD.DatabaseServices.AssocOffsetSurfaceActionBody">
             <summary>This wraps the ObjectARX AcDbAssocOffsetSurfaceActionBody class.</summary>
         </member>
@@ -26426,6 +26481,10 @@ Autodesk.AutoCAD.DatabaseServices.ObjectId.</summary>
         <member name="M:Autodesk.AutoCAD.Runtime.RuntimeSystem.Terminate">
             <summary>Called only when AutoCAD exits.</summary>
         </member>
+        <member name="M:Autodesk.AutoCAD.Runtime.RuntimeSystem.Main(System.String)">
+            <summary>Initializes the .NET Runtime using ICLRRuntimeHost.</summary>
+            <param name="pwzArgument"> Input System.String; argument is not used, it’s there to satisfy ExecuteInDefaultAppDomain which calls the method and loads the acdbmgd assembly.</param>
+        </member>
         <member name="T:Autodesk.AutoCAD.Geometry.ExternalEntityKind">
             <summary>This .NET enum wraps the AcGe::ExternalEntityKind ObjectARX enum.</summary>
         </member>
@@ -27003,6 +27062,13 @@ Autodesk.AutoCAD.DatabaseServices.ObjectId.</summary>
             <param name="u"> Input u vector</param>
             <param name="v"> Input Autodesk.AutoCAD.Geometry.Vector3d object, v vector</param>
         </member>
+        <member name="T:Autodesk.AutoCAD.UniqueString">
+            <summary>This wraps the AcUniqueString class.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.UniqueString.Intern(System.String)">
+            <summary>Gets an existing UniqueString or registers a new UniqueString.</summary>
+            <param name="A_0"> String to convert into a UniqueString</param>
+        </member>
         <member name="T:Autodesk.AutoCAD.GraphicsSystem.KernelDescriptor">
             <summary>This wraps the AcGsKernelDescriptor class.</summary>
         </member>
@@ -27015,7 +27081,7 @@ Autodesk.AutoCAD.DatabaseServices.ObjectId.</summary>
             <param name="capability"> String describing the graphics capability.</param>
         </member>
         <member name="T:Autodesk.AutoCAD.GraphicsSystem.GraphicsKernel">
-            <summary>This is class Autodesk.AutoCAD.GraphicsSystem.GraphicsKernel.</summary>
+            <summary>This .NET class wraps the AcGsGraphicsKernel ObjectARX class.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.GraphicsKernel.#ctor(System.IntPtr)">
             <summary>This is GraphicsKernel, a member of class GraphicsKernel.</summary>
@@ -27870,9 +27936,6 @@ Autodesk.AutoCAD.DatabaseServices.ObjectId.</summary>
             <summary>Constructs a 2D polynomial spline interpolating a given array if 2D points within given tolerance.</summary>
             <param name="fitPoints"> Input points interpolating the spline curve</param>
             <param name="fitTolerance"> Input maximal deviation of the curve from the fitPoints</param>
-        </member>
-        <member name="M:Autodesk.AutoCAD.Geometry.NurbCurve2d.#ctor(Autodesk.AutoCAD.Geometry.Point2dCollection,Autodesk.AutoCAD.Geometry.Vector2d,Autodesk.AutoCAD.Geometry.Vector2d,System.Boolean,System.Boolean,Autodesk.AutoCAD.Geometry.KnotParameterizationEnum)">
-            <summary>This wraps AcGeNurbCurve2d::AcGeNurbCurve2d (const AcGePoint2dArray&amp; fitPoints, const AcGeVector2d&amp; startTangent, const AcGeVector2d&amp; endTangent, Adesk::Boolean startTangentDefined = Adesk::kTrue, Adesk::Boolean endTangentDefined = Adesk::kTrue, const AcGeTol&amp; fitTolerance = AcGeContext::gTol) method.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.Geometry.NurbCurve2d.#ctor(System.Int32,Autodesk.AutoCAD.Geometry.KnotCollection,Autodesk.AutoCAD.Geometry.Point2dCollection,Autodesk.AutoCAD.Geometry.DoubleCollection,System.Boolean)">
             <summary>Constructs a 2D rational spline by a knot vector, control points, and weights.</summary>
@@ -29892,6 +29955,39 @@ A call to CycleOut() will only return valid cycle information after a call to Gr
         <member name="P:Autodesk.AutoCAD.DatabaseServices.LayoutManager.LayoutCount">
             <summary>Accesses the current number of layouts.</summary>
         </member>
+        <member name="T:Autodesk.AutoCAD.Runtime.FileOperationsEventArgs">
+            <summary>Contains file operations event data.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Runtime.FileOperationsEventArgs.ReadOnly">
+            <summary>This file operation event is for a read-only file or not.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Runtime.FileOperationsEventArgs.KnownToBeUnmodified">
+            <summary>This file operation event is for a that is known to be unmodified.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Runtime.FileOperationsEventArgs.ReferenceFile">
+            <summary>This file operation event is for a reference file (i.e.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Runtime.FileOperationsEventArgs.ReloadPrimary">
+            <summary>This file operation event is for a file being explicitly reloaded.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Runtime.FileOperationsEventArgs.ReloadNested">
+            <summary>This file operation event is for a reload triggered by an ancestor being reloaded.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Runtime.FileOperationsEventArgs.FilePath">
+            <summary>Gets the full path of the file for which the event is occurring.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.Runtime.FileOperationsEventArgs.VetoStatus">
+            <summary>Gets the veto status of the file operation event.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Runtime.FileWillOpenEventHandler">
+            <summary>A delegate implemented by observers that are interested in file opening events.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Runtime.FileOpenAbortedEventHandler">
+            <summary>A delegate implemented by observers that are interested in aborted file opening events.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.Runtime.FileHasClosedEventHandler">
+            <summary>A delegate implemented by observers that are interested in file closing events.</summary>
+        </member>
         <member name="T:Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator">
             <summary>This .NET class wraps the AcDbPlotSettingsValidator ObjectARX class.</summary>
         </member>
@@ -30897,7 +30993,8 @@ Strip leading and trailing whitespace.</summary>
             <param name="layerId"> Input Layer to be treated as frozen.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.View.FreezeLayer(System.Int64)">
-            <summary>Obsolete - Use the FreezeLayer method that accepts an IntPtr value.</summary>
+            <summary>Obsolete - Use the FreezeLayer method that accepts an IntPtr value. 
+Informs the view that the specified layer is frozen in this view.</summary>
             <param name="layerId"> Input Layer to be treated as frozen.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.View.ThawLayer(System.IntPtr)">
@@ -30905,7 +31002,8 @@ Strip leading and trailing whitespace.</summary>
             <param name="layerId"> Input Layer to be treated as thawed.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.View.ThawLayer(System.Int64)">
-            <summary>Obsolete - Use the ThawLayer method that accepts an IntPtr value.</summary>
+            <summary>Obsolete - Use the ThawLayer method that accepts an IntPtr value. 
+Informs the view that the specified layer should be thawed in this view.</summary>
             <param name="layerId"> Input Layer to be treated as thawed.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.View.ClearFrozenLayers">
@@ -31293,7 +31391,17 @@ This function is typically used to determine when geometry will end up displayin
             <summary>Applies and saves configuration changes.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.ShowConfigDialog(System.String)">
-            <summary>This is ShowConfigDialog, a member of class Configuration.</summary>
+            <summary>Displays various configuration related dialogs.</summary>
+            <param name="dlgType"> Input attribute for dialog type</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.IsInConfiguring">
+            <summary>Returns true if the product is currently in the process of configuring the hardware, false otherwise is returned.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.SaveToRegistry">
+            <summary>Saves the settings to the registry.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.Restore">
+            <summary>Restores the hardware certification result.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.GetHardwareAcceleratedDrivers">
             <summary>Returns the name and path of the current hardware accelerated driver.</summary>
@@ -31302,12 +31410,18 @@ This function is typically used to determine when geometry will end up displayin
             <summary>Returns the degradation channel at the specified position in the degradation chain.</summary>
             <param name="order"> Input for which degradation channel will be returned.</param>
         </member>
+        <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.GetFeatureMode">
+            <summary>Returns the current graphics hardware Feature Mode as a FeatureModeType enum value.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.GetFeatureModeAvailable">
+            <summary>Returns the available value for the graphics hardware Feature Mode.</summary>
+        </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.IsFeatureEnabled(Autodesk.AutoCAD.UniqueString)">
-            <summary>Returns Boolean indicating whether a hardware feature is enabled.</summary>
+            <summary>Returns a Boolean indicating whether a hardware feature is enabled.</summary>
             <param name="feature"> Input input feature.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.IsFeatureAvailable(Autodesk.AutoCAD.UniqueString)">
-            <summary>Returns Boolean indicating whether a feature is available.</summary>
+            <summary>Returns a Boolean indicating whether a feature is available.</summary>
             <param name="feature"> Input input feature.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.IsFeatureRecommended(Autodesk.AutoCAD.UniqueString)">
@@ -31319,6 +31433,19 @@ This function is typically used to determine when geometry will end up displayin
             <param name="feature"> Input feature to be enabled.</param>
             <param name="enable"> Input Boolean to enable or disable the feature.</param>
         </member>
+        <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.GetFeatureUsedVal(Autodesk.AutoCAD.UniqueString)">
+            <summary>Get the value of the hardware feature.</summary>
+            <param name="feature"> Input feature name as string</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.GetFeatureAvailableVal(Autodesk.AutoCAD.UniqueString)">
+            <summary>Get the available value for the hardware feature.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.GetFeatureRecommendedVal(Autodesk.AutoCAD.UniqueString)">
+            <summary>Get the recommended value for the hardware feature.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.SetFeatureUsedVal(Autodesk.AutoCAD.UniqueString,System.Int32)">
+            <summary>Set the value of the hardware feature.</summary>
+        </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.IsHardwareAccelerationEnabled">
             <summary>Queries the system on whether hardware acceleration is enabled or not.</summary>
         </member>
@@ -31329,16 +31456,17 @@ This function is typically used to determine when geometry will end up displayin
             <summary>Queries the system on whether hardware acceleration is recommended or not.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.setHardwareAcceleration(System.Boolean)">
-            <summary>This is setHardwareAcceleration, a member of class Configuration.</summary>
+            <summary>Specifies whether hardware acceleration is enabled.</summary>
+            <param name="bEnable"> Input Boolean as hardware acceleration state</param>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.IsNoHardwareOverrideEnabled">
             <summary>Check to see if AutoCAD is running in safe mode.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.GetCertificationData">
-            <summary>This is GetCertificationData, a member of class Configuration.</summary>
+            <summary>Gets aggregated Hardware Certification information.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.GraphicsSystem.Configuration.GetVirtualDeviceName">
-            <summary>This is GetVirtualDeviceName, a member of class Configuration.</summary>
+            <summary>Gets the name of the virtual device.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.GraphicsSystem.Configuration.DriverName">
             <summary>Retrieves the driver name.</summary>
@@ -31403,6 +31531,9 @@ This function is typically used to determine when geometry will end up displayin
         <member name="T:Autodesk.AutoCAD.GraphicsSystem.Quality">
             <summary>This .NET class wraps the AcGsConfig::Quality ObjectARX class.</summary>
         </member>
+        <member name="T:Autodesk.AutoCAD.GraphicsSystem.FeatureModeType">
+            <summary>This enumeration describes hardware feature configuration mode types.</summary>
+        </member>
         <member name="T:Autodesk.AutoCAD.GraphicsSystem.EffectListType">
             <summary>This is record Autodesk.AutoCAD.GraphicsSystem.EffectListType.</summary>
         </member>
@@ -31423,9 +31554,6 @@ This function is typically used to determine when geometry will end up displayin
         </member>
         <member name="P:Autodesk.AutoCAD.GraphicsSystem.Node.Drawable">
             <summary>Returns the Drawable associated with this Node.</summary>
-        </member>
-        <member name="T:Autodesk.AutoCAD.GraphicsSystem.RenderType">
-            <summary>This .NET enum wraps the AcGsModel::RenderType ObjectARX enum.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.GraphicsSystem.InvalidationHint">
             <summary>This .NET enum wraps the AcGsModel::InvalidationHint ObjectARX enum.</summary>

@@ -84,6 +84,9 @@
         <member name="M:Autodesk.AutoCAD.EditorInput.Editor.SelectAll">
             <summary>Returns the selection set obtained.</summary>
         </member>
+        <member name="M:Autodesk.AutoCAD.EditorInput.Editor.SelectCrossingWindow(Autodesk.AutoCAD.Geometry.Point3d,Autodesk.AutoCAD.Geometry.Point3d,Autodesk.AutoCAD.EditorInput.SelectionFilter,System.Boolean)">
+            <summary>This is SelectCrossingWindow, a member of class Editor.</summary>
+        </member>
         <member name="M:Autodesk.AutoCAD.EditorInput.Editor.SelectCrossingWindow(Autodesk.AutoCAD.Geometry.Point3d,Autodesk.AutoCAD.Geometry.Point3d,Autodesk.AutoCAD.EditorInput.SelectionFilter)">
             <summary>Returns the selection set obtained using the filter.</summary>
             <param name="pt1"> Input first corner of selection window</param>
@@ -132,6 +135,9 @@
         <member name="M:Autodesk.AutoCAD.EditorInput.Editor.SelectWindowPolygon(Autodesk.AutoCAD.Geometry.Point3dCollection)">
             <summary>Returns the selection set obtained.</summary>
             <param name="polygon"> Input collection of points that represent vertices of the polygon.</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.EditorInput.Editor.SelectImplied">
+            <summary>Selects the firstpick set.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.EditorInput.Editor.SelectLast">
             <summary>Selects last result from the prompt.</summary>
@@ -200,7 +206,7 @@
             <param name="basePoint"> Input the first corner of the rectangle being selected.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.EditorInput.Editor.GetKeywords(Autodesk.AutoCAD.EditorInput.PromptKeywordOptions)">
-            <summary>Wraps the acedGetKword() ObjectARX function.</summary>
+            <summary>Gets user input for a keyword.</summary>
             <param name="options"> Input optional parameters of the prompt.</param>
         </member>
         <member name="M:Autodesk.AutoCAD.EditorInput.Editor.GetString(Autodesk.AutoCAD.EditorInput.PromptStringOptions)">
@@ -290,6 +296,12 @@
         </member>
         <member name="M:Autodesk.AutoCAD.EditorInput.Editor.SwitchToPaperSpace">
             <summary>Switches the current view to paper space.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.EditorInput.Editor.SetImpliedSelection(Autodesk.AutoCAD.EditorInput.SelectionSet)">
+            <summary>This is SetImpliedSelection, a member of class Editor.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.EditorInput.Editor.SetImpliedSelection(Autodesk.AutoCAD.DatabaseServices.ObjectId[])">
+            <summary>This is SetImpliedSelection, a member of class Editor.</summary>
         </member>
         <member name="M:Autodesk.AutoCAD.EditorInput.Editor.GetCurrentView">
             <summary>Gets the current view from ViewTableRecord.</summary>
@@ -617,6 +629,12 @@ This event allows applications to respond to users' attempts to execute commands
         <member name="E:Autodesk.AutoCAD.ApplicationServices.Document.LayoutSwitching">
             <summary>This event is fired when the layout is switched.</summary>
         </member>
+        <member name="E:Autodesk.AutoCAD.ApplicationServices.Document.ModelessOperationWillStart">
+            <summary>Wraps the AcEditorReactor.modelessOperationWillStart() ObjectARX function.</summary>
+        </member>
+        <member name="E:Autodesk.AutoCAD.ApplicationServices.Document.ModelessOperationEnded">
+            <summary>Wraps the AcEditorReactor.modelessOperationEnded() ObjectARX function.</summary>
+        </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.Document.FormatForSave">
             <summary>The DocumentSaveFormat for the document.</summary>
         </member>
@@ -709,6 +727,34 @@ This event allows applications to respond to users' attempts to execute commands
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.RecentDocumentCollection.UsePinnedItems">
             <summary>This is UsePinnedItems, a member of class RecentDocumentCollection.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.ApplicationServices.RecentDocument">
+            <summary>Class represents a recently opened document or drawing.</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.ApplicationServices.RecentDocument.FromPath(System.String)">
+            <summary>Searches the specified path for a recent document file.</summary>
+            <param name="path"> Input string as a path name</param>
+        </member>
+        <member name="P:Autodesk.AutoCAD.ApplicationServices.RecentDocument.Path">
+            <summary>Returns the path to the file associated with the document.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.ApplicationServices.RecentDocument.Version">
+            <summary>Returns the version of the document.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.ApplicationServices.RecentDocument.LastSavedBy">
+            <summary>Returns the Last Saved By value assigned to the document.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.ApplicationServices.RecentDocument.CurrentlyOpenBy">
+            <summary>Returns true if the document is currently open in the application.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.ApplicationServices.RecentDocument.Preview">
+            <summary>Returns the bitmap of the preview associated with the document.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.ApplicationServices.RecentDocument.IsPinned">
+            <summary>Returns true if the document is pinned on the Start page or Application menu.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.ApplicationServices.RecentDocument.IsClosed">
+            <summary>Returns true if the document is currently closed in the application.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.ApplicationServices.UserConfigurationManager">
             <summary>This class manages global, user profile, and dialog sections of the Windows registry for AutoCAD host applications.</summary>
@@ -1095,6 +1141,12 @@ A DSD file is an INI file used when publishing multiple sheets with the PUBLISH 
         </member>
         <member name="P:Autodesk.AutoCAD.ApplicationServices.BeginQuitEventArgs.IsVetoed">
             <summary>This is IsVetoed, a member of class BeginQuitEventArgs.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.ApplicationServices.ModelessOperationEventArgs">
+            <summary>Provides data for the ModelessOperationEnded and ModelessOperationWillStart events.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.ApplicationServices.ModelessOperationEventArgs.Context">
+            <summary>Accesses the current context of the operation.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.EditorInput.PromptPointOptionsEventArgs">
             <summary>This class provides data for the PromptingForPoint event of the Editor class.</summary>
@@ -2021,6 +2073,14 @@ If type is already in the class list, the value of exactMatch is applied to the 
             <param name="keywords"> Input keywords</param>
             <param name="globalKeywords"> Input global keywords</param>
         </member>
+        <member name="M:Autodesk.AutoCAD.EditorInput.PromptSelectionOptions.AddKeywordsToMinimalList(Autodesk.AutoCAD.EditorInput.AddedKeywords)">
+            <summary>This function adds the keywords specified by kwds to the base keyword list of "Add/Remove/Undo/Single".</summary>
+            <param name="kwds"> bitwise combination of AddedKeywords enum values</param>
+        </member>
+        <member name="M:Autodesk.AutoCAD.EditorInput.PromptSelectionOptions.RemoveKeywordsFromFullList(Autodesk.AutoCAD.EditorInput.SubtractedKeywords)">
+            <summary>This function removes the keywords specified by kwds from the full keyword list of "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/Single".</summary>
+            <param name="kwds"> bitwise combination of SubtractedKeywords enum values</param>
+        </member>
         <member name="E:Autodesk.AutoCAD.EditorInput.PromptSelectionOptions.UnknownInput">
             <summary>Occurs when the user types arbitrary input in response to a selection prompt.</summary>
         </member>
@@ -2081,6 +2141,12 @@ If type is already in the class list, the value of exactMatch is applied to the 
         </member>
         <member name="P:Autodesk.AutoCAD.EditorInput.PromptSelectionResult.Value">
             <summary>Gets the SelectionSet that the user selected.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.EditorInput.AddedKeywords">
+            <summary>This enumeration is used to add object selection keywords to the prompt message displayed using the PromptSelectionOptions class.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.EditorInput.SubtractedKeywords">
+            <summary>This enumeration is used to remove object selection keywords from the prompt message displayed using the PromptSelectionOptions class.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.EditorInput.PickPointDescriptor">
             <summary>This class describes the shape of a pick point.</summary>
@@ -2184,7 +2250,8 @@ If type is already in the class list, the value of exactMatch is applied to the 
             <summary>Returns the optional details of the selected sub object.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.EditorInput.SelectedSubObject.GraphicsSystemMarker">
-            <summary>Obsolete - Use the GraphicsSystemMarkerPtr property instead.</summary>
+            <summary>Obsolete - Use the GraphicsSystemMarkerPtr property instead 
+Gets a value that describes what part of the object was selected.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.EditorInput.SelectedSubObject.GraphicsSystemMarkerPtr">
             <summary>Returns the GS Marker of the selected sub object.</summary>
@@ -2303,7 +2370,8 @@ If type is already in the class list, the value of exactMatch is applied to the 
             <summary>Gets a value that describes how the object was selected.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.EditorInput.SelectedObject.GraphicsSystemMarker">
-            <summary>Obsolete - Use the GraphicsSystemMarkerPtr property instead.</summary>
+            <summary>Obsolete - Use the GraphicsSystemMarkerPtr property instead 
+Gets a value that describes what part of the object was selected.</summary>
         </member>
         <member name="P:Autodesk.AutoCAD.EditorInput.SelectedObject.GraphicsSystemMarkerPtr">
             <summary>Returns the GS Marker of the selected sub object.</summary>
@@ -2453,6 +2521,9 @@ If type is already in the class list, the value of exactMatch is applied to the 
         <member name="P:Autodesk.AutoCAD.PlottingServices.DsdEntry.OriginalSheetPath">
             <summary>Path of the original sheet to be published.</summary>
         </member>
+        <member name="P:Autodesk.AutoCAD.PlottingServices.DsdEntry.TraceSession">
+            <summary>Determines whether the trace session associated with the sheet is included as part of the plotted output.</summary>
+        </member>
         <member name="T:Autodesk.AutoCAD.PlottingServices.Dwf3dOptions">
             <summary>This .NET class wraps the AcPl3DDwfOptions ObjectARX struct.</summary>
         </member>
@@ -2541,6 +2612,9 @@ If type is already in the class list, the value of exactMatch is applied to the 
         </member>
         <member name="P:Autodesk.AutoCAD.PlottingServices.DsdData.Dwf3dOptions">
             <summary>Returns the 3D DWF options object.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.PlottingServices.DsdData.InitializeLayouts">
+            <summary>Determines whether the publish process attempts to initialize uninitialized layouts.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.PlottingServices.SheetType">
             <summary>This .NET enum wraps the AcPlDSDEntry::SheetType ObjectARX enum.</summary>
@@ -4046,6 +4120,19 @@ If type is already in the class list, the value of exactMatch is applied to the 
         </member>
         <member name="T:Autodesk.AutoCAD.GraphicsSystem.ViewUpdateFlags">
             <summary>This enum defines view update flags, providing context to the view update reactor methods.</summary>
+        </member>
+        <member name="T:Autodesk.AutoCAD.GraphicsSystem.Manager2">
+            <summary>The Manager2 class extends the functionality of the Manager class and provides services that help to hide the details of connecting AutoCAD and ARX applications to the graphics system (GS).</summary>
+        </member>
+        <member name="M:Autodesk.AutoCAD.GraphicsSystem.Manager2.GetActiveModels(Autodesk.AutoCAD.DatabaseServices.Database)">
+            <summary>Gets an array of active "main" graphics models for a database.</summary>
+            <param name="db"> Input database</param>
+        </member>
+        <member name="P:Autodesk.AutoCAD.GraphicsSystem.Manager2.ActiveGraphicsKernels">
+            <summary>Gets an array of active graphics kernels.</summary>
+        </member>
+        <member name="P:Autodesk.AutoCAD.GraphicsSystem.Manager2.ActiveModels">
+            <summary>Gets an array of active graphics models.</summary>
         </member>
         <member name="T:Autodesk.AutoCAD.GraphicsSystem.LinePattern">
             <summary>This .NET enum wraps the AcGs.LinePattern ObjectARX enum.</summary>
