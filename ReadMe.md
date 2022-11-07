@@ -154,7 +154,7 @@ ExploderApp
 
 ![](assets/LoadApplications.png)
 
-如图所示, 将`tch_kernel.arx`添加进入自动加载项即可.
+如图所示, 将`tch_*.arx`添加进入自动加载项即可.
 
 # 其它相关参考资料
 1. [AutoCAD Developer Center](https://www.Autodesk.com/DevelopAutocad)
