@@ -27,7 +27,7 @@ class ExplodeApp
 
     private static string callBackUrl;
 
-    private const int SUSPEND_PERIOD = 500; // ms
+    private static int suspensionPeriod; // ms
 
     private static readonly HttpClient httpClient = new HttpClient();
 
@@ -71,7 +71,7 @@ class ExplodeApp
 
             acApp.Visible = true;
             acApp.Documents.Close();
-            Thread.Sleep(SUSPEND_PERIOD);
+            Thread.Sleep(suspensionPeriod);
         }
         catch (Exception ex)
         {
@@ -105,7 +105,7 @@ class ExplodeApp
             activeDoc.SendCommand($@"(command ""NETLOAD"" ""{EXTENSION_PATH}"") ");
             activeDoc.SendCommand("ExplodeTypes ");
             activeDoc.Close(true);
-            Thread.Sleep(SUSPEND_PERIOD);
+            Thread.Sleep(suspensionPeriod);
         }
         catch (Exception exception)
         {
@@ -154,13 +154,14 @@ class ExplodeApp
     static void Main(string[] args)
     {
         callBackUrl = args[0];
+        suspensionPeriod = int.Parse(args[1]);
 
-        if (args.Length % 2 != 1)
+        if (args.Length % 2 != 0)
         {
             Console.WriteLine("Wrong arguments count");
             return;
         }
 
-        Run(args.Skip(1));
+        Run(args.Skip(2));
     }
 }

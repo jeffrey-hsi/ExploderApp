@@ -57,10 +57,11 @@ ExploderApp
 
 ## 使用方法
 
-- `ExplodeApp.exe CallbackUrl [FilePath FID ...]`
+- `ExplodeApp.exe CallbackUrl SuspensionPeriod [FilePath FID ...]`
 
 其中:
 - `FID`为每个处理文件对应的**唯一**字符串
+- `SuspensionPeroid`为每个文件处理间隔时长 (ms), 用于降低COM端口被占用的问题
 - `FilePath`为对应处理文件的**绝对路径**
 - `Callback`为HTTP回调地址, 回调内容为`fid={fid}&state={stateCode}`. (`stateCode`为`4`时代表成功, `5`代表失败)
 
@@ -84,7 +85,7 @@ ExploderApp
    2. 若CAD已启动且存在未保存的文件, 执行该命令前先保存并关闭在当前CAD工作区的文件
 4. 只能单进程执行, 无法并行
    - 但考虑到AutoCAD及炸开程序环境准备的时间开销, 将文件队列输入`ExplodeApp.exe`的执行效率仍要高于反复调用
-5. 执行 (AutoCAD初始化及每个文件的打开与保存) 有一定失败概率 (可能与COM机制有关), 调用方可考虑增设重试阈值
+5. 执行 (AutoCAD初始化及每个文件的打开与保存) 有一定失败概率 (可能与COM机制有关), 调用方可考虑更改`SuspensionPeriod`及增设重试阈值
 
 
 
@@ -142,7 +143,6 @@ ExploderApp
 ### 内部常量字段
 
 - `PROG_ID`: [AutoCAD版本号](https://help.autodesk.com/view/OARX/2023/ENU/?guid=GUID-A6C680F2-DE2E-418A-A182-E4884073338A> "Release Number")
-- `SUSPEND_PERIOD`: 为降低COM接口占用概率而增设的缓冲时间, 单位为`ms`
 
 
 # (4. 插件配置)
