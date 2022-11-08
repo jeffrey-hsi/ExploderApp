@@ -78,12 +78,11 @@ class ExplodeCommand
 
     private static void CheckInBlockTableRecord(Transaction transaction, BlockTableRecord block, Regex regex)
     {
-        foreach (var objId in block.Cast<ObjectId>()
-            .Where(objId => objId.IsValid))
+        foreach (var entity in block.Cast<ObjectId>()
+            .Where(objId => objId.IsValid)
+            .Select(id => (Entity)transaction.GetObject(id, OpenMode.ForRead,
+                openErased: false, forceOpenOnLockedLayer: true)))
         {
-            var entity = (Entity)transaction.GetObject(objId, OpenMode.ForRead,
-                openErased: false, forceOpenOnLockedLayer: true);
-
             RecursiveExplode(transaction, block, entity, regex);
         }
     }
