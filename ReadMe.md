@@ -4,13 +4,13 @@ ExploderApp
 
 - [ExploderApp](#exploderapp)
 - [0. 基本原理](#0-基本原理)
-- [1. 运行使用](#1-运行使用)
-  - [环境要求](#环境要求)
-  - [环境结构](#环境结构)
+- [1. 环境要求](#1-环境要求)
+- [2. 运行使用](#2-运行使用)
+  - [程序结构](#程序结构)
   - [使用方法](#使用方法)
   - [配置文件格式](#配置文件格式)
   - [注意事项](#注意事项)
-- [2. 开发维护](#2-开发维护)
+- [3. 开发维护](#3-开发维护)
   - [1. `ExplodeCommand`](#1-explodecommand)
     - [依赖动态库](#依赖动态库)
     - [调试方式](#调试方式)
@@ -18,16 +18,14 @@ ExploderApp
     - [依赖动态库](#依赖动态库-1)
     - [调试方式](#调试方式-1)
     - [内部常量字段](#内部常量字段)
-- [(3. 插件配置)](#3-插件配置)
+- [(4. 插件配置)](#4-插件配置)
 - [其它相关参考资料](#其它相关参考资料)
 
 # 0. 基本原理
 
 ![](assets/Structure.png)
 
-# 1. 运行使用
-
-## 环境要求
+# 1. 环境要求
 
 1. Windows 10 version 1809 or above
 2. [.NET Framework 4.8 or later](<https://dotnet.microsoft.com/en-us/download/dotnet-framework> "Download .NET Framework")
@@ -35,7 +33,9 @@ ExploderApp
 4. 相关自定义实体插件 (若需要, 比如[天正插件](http://tangent.com.cn/download/gongju/970.html))
 5. (可能需要) `administrator`权限
 
-## 环境结构
+# 2. 运行使用
+
+## 程序结构
 ```
 📦[Workspace]
  ┣ 📂(.tmp)
@@ -88,7 +88,7 @@ ExploderApp
 
 
 
-# 2. 开发维护
+# 3. 开发维护
 ```
 📦ExploderApp
  ┣ 📂build
@@ -145,7 +145,7 @@ ExploderApp
 - `SUSPEND_PERIOD`: 为降低COM接口占用概率而增设的缓冲时间, 单位为`ms`
 
 
-# (3. 插件配置)
+# (4. 插件配置)
 
 以天正8.0插件为例, 直接运行官方的可执行程序, 会将插件自动载入到对应支持版本的CAD中. (副作用是程序必须以管理员权限运行)
 
