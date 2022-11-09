@@ -42,6 +42,23 @@ class ExplodeCommand
                 if (GetTypes() is Regex types)
                 {
                     CheckInBlockTableRecord(modelSpace, types);
+
+                    // if tangent's entities are exploded, registered application "TCH" need to be erased
+                    if (types.IsMatch("TCH_.*"))
+                    {
+                        var regApps = (RegAppTable)transaction.GetObject(
+                            currDb.RegAppTableId, OpenMode.ForRead);
+                        foreach (var regApp in regApps.Cast<ObjectId>()
+                            .Where(id => id.IsValid)
+                            .Select(id => (RegAppTableRecord)transaction.GetObject(id, OpenMode.ForWrite)))
+                        {
+                            if (regApp.Name == "_TCH")
+                            {
+                                regApp.Erase();
+                                break;
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
