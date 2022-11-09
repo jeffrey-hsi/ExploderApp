@@ -4,13 +4,13 @@ ExploderApp
 
 - [ExploderApp](#exploderapp)
 - [0. 基本原理](#0-基本原理)
-- [1. 运行使用](#1-运行使用)
-  - [环境要求](#环境要求)
-  - [环境结构](#环境结构)
+- [1. 环境要求](#1-环境要求)
+- [2. 运行使用](#2-运行使用)
+  - [程序结构](#程序结构)
   - [使用方法](#使用方法)
   - [配置文件格式](#配置文件格式)
   - [注意事项](#注意事项)
-- [2. 开发维护](#2-开发维护)
+- [3. 开发维护](#3-开发维护)
   - [1. `ExplodeCommand`](#1-explodecommand)
     - [依赖动态库](#依赖动态库)
     - [调试方式](#调试方式)
@@ -18,16 +18,14 @@ ExploderApp
     - [依赖动态库](#依赖动态库-1)
     - [调试方式](#调试方式-1)
     - [内部常量字段](#内部常量字段)
-- [(3. 插件配置)](#3-插件配置)
+- [(4. 插件配置)](#4-插件配置)
 - [其它相关参考资料](#其它相关参考资料)
 
 # 0. 基本原理
 
 ![](assets/Structure.png)
 
-# 1. 运行使用
-
-## 环境要求
+# 1. 环境要求
 
 1. Windows 10 version 1809 or above
 2. [.NET Framework 4.8 or later](<https://dotnet.microsoft.com/en-us/download/dotnet-framework> "Download .NET Framework")
@@ -35,7 +33,9 @@ ExploderApp
 4. 相关自定义实体插件 (若需要, 比如[天正插件](http://tangent.com.cn/download/gongju/970.html))
 5. (可能需要) `administrator`权限
 
-## 环境结构
+# 2. 运行使用
+
+## 程序结构
 ```
 📦[Workspace]
  ┣ 📂(.tmp)
@@ -57,10 +57,11 @@ ExploderApp
 
 ## 使用方法
 
-- `ExplodeApp.exe CallbackUrl [FilePath FID ...]`
+- `ExplodeApp.exe CallbackUrl SuspensionPeriod [FilePath FID ...]`
 
 其中:
 - `FID`为每个处理文件对应的**唯一**字符串
+- `SuspensionPeroid`为每个文件处理间隔时长 (ms), 用于降低COM端口被占用的问题
 - `FilePath`为对应处理文件的**绝对路径**
 - `Callback`为HTTP回调地址, 回调内容为`fid={fid}&state={stateCode}`. (`stateCode`为`4`时代表成功, `5`代表失败)
 
@@ -84,11 +85,12 @@ ExploderApp
    2. 若CAD已启动且存在未保存的文件, 执行该命令前先保存并关闭在当前CAD工作区的文件
 4. 只能单进程执行, 无法并行
    - 但考虑到AutoCAD及炸开程序环境准备的时间开销, 将文件队列输入`ExplodeApp.exe`的执行效率仍要高于反复调用
-5. 执行 (AutoCAD初始化及每个文件的打开与保存) 有一定失败概率 (可能与COM机制有关), 调用方可考虑增设重试阈值
+5. 执行 (AutoCAD初始化及每个文件的打开与保存) 有一定失败概率 (可能与COM机制有关), 调用方可考虑更改`SuspensionPeriod`及增设重试阈值
+6. 对天正实体作特殊处理: 若天正实体 (`^TCH_.*`) 被全部炸开, 则在`RegAppTable`中将"_TCH"移除 (便于ECAD作快速天正实体检测)
 
 
 
-# 2. 开发维护
+# 3. 开发维护
 ```
 📦ExploderApp
  ┣ 📂build
@@ -142,10 +144,9 @@ ExploderApp
 ### 内部常量字段
 
 - `PROG_ID`: [AutoCAD版本号](https://help.autodesk.com/view/OARX/2023/ENU/?guid=GUID-A6C680F2-DE2E-418A-A182-E4884073338A> "Release Number")
-- `SUSPEND_PERIOD`: 为降低COM接口占用概率而增设的缓冲时间, 单位为`ms`
 
 
-# (3. 插件配置)
+# (4. 插件配置)
 
 以天正8.0插件为例, 直接运行官方的可执行程序, 会将插件自动载入到对应支持版本的CAD中. (副作用是程序必须以管理员权限运行)
 
@@ -154,7 +155,7 @@ ExploderApp
 
 ![](assets/LoadApplications.png)
 
-如图所示, 将`tch_kernel.arx`添加进入自动加载项即可.
+如图所示, 将`tch_*.arx`添加进入自动加载项即可.
 
 # 其它相关参考资料
 1. [AutoCAD Developer Center](https://www.Autodesk.com/DevelopAutocad)

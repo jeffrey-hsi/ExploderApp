@@ -16,6 +16,9 @@ class ExplodeCommand
         Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
         .Replace(@"\", @"/") + "/.tmp";
 
+    // lifetime as the command
+    private static Transaction transaction;
+
     [CommandMethod("ExplodeTypes")]
     public static void ExplodeTypes()
     {
@@ -26,7 +29,7 @@ class ExplodeCommand
         var currDb = doc.Database;
 
         using (var lockDoc = doc.LockDocument())
-        using (var transaction = currDb.TransactionManager.StartTransaction())
+        using (transaction = currDb.TransactionManager.StartTransaction())
         {
             try
             {
@@ -38,7 +41,24 @@ class ExplodeCommand
 
                 if (GetTypes() is Regex types)
                 {
-                    CheckInBlockTableRecord(transaction, modelSpace, types);
+                    CheckInBlockTableRecord(modelSpace, types);
+
+                    // if tangent's entities are exploded, registered application "TCH" need to be erased
+                    if (types.IsMatch("TCH_.*"))
+                    {
+                        var regApps = (RegAppTable)transaction.GetObject(
+                            currDb.RegAppTableId, OpenMode.ForRead);
+                        foreach (var regApp in regApps.Cast<ObjectId>()
+                            .Where(id => id.IsValid)
+                            .Select(id => (RegAppTableRecord)transaction.GetObject(id, OpenMode.ForWrite)))
+                        {
+                            if (regApp.Name == "_TCH")
+                            {
+                                regApp.Erase();
+                                break;
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -76,19 +96,18 @@ class ExplodeCommand
         return new Regex(pattern, RegexOptions.ECMAScript);
     }
 
-    private static void CheckInBlockTableRecord(Transaction transaction, BlockTableRecord block, Regex regex)
+    private static void CheckInBlockTableRecord(BlockTableRecord block, Regex regex)
     {
-        foreach (var objId in block.Cast<ObjectId>()
-            .Where(objId => objId.IsValid))
+        foreach (var entity in block.Cast<ObjectId>()
+            .Where(objId => objId.IsValid)
+            .Select(id => (Entity)transaction.GetObject(id, OpenMode.ForRead,
+                openErased: false, forceOpenOnLockedLayer: true)))
         {
-            var entity = (Entity)transaction.GetObject(objId, OpenMode.ForRead,
-                openErased: false, forceOpenOnLockedLayer: true);
-
-            RecursiveExplode(transaction, block, entity, regex);
+            RecursiveExplode(block, entity, regex);
         }
     }
 
-    private static void RecursiveExplode(Transaction transaction, BlockTableRecord block, Entity entity, Regex regex)
+    private static void RecursiveExplode(BlockTableRecord block, Entity entity, Regex regex)
     {
         Debug.Assert(entity.BlockId == block.Id);
 
@@ -98,7 +117,7 @@ class ExplodeCommand
             var subBlock = (BlockTableRecord)transaction.GetObject(
                 subBlockId, OpenMode.ForRead);
 
-            CheckInBlockTableRecord(transaction, subBlock, regex);
+            CheckInBlockTableRecord(subBlock, regex);
         }
         else if (regex.IsMatch(entity.GetRXClass().DxfName))
         {
@@ -122,7 +141,7 @@ class ExplodeCommand
                 block.AppendEntity(obj);
                 transaction.AddNewlyCreatedDBObject(obj, true);
 
-                RecursiveExplode(transaction, block, obj, regex);
+                RecursiveExplode(block, obj, regex);
             }
             block.DowngradeOpen();
 
